@@ -65,7 +65,6 @@ class TravelAlbania_Admin_Helper
             'new_item_name'     => __('New Flight Name', 'tta-travel-offer'),
             'menu_name'         => __('Flights', 'tta-travel-offer'),
         ];
-
         $args = [
             'hierarchical'      => true,
             'labels'            => $labels,
@@ -76,7 +75,60 @@ class TravelAlbania_Admin_Helper
             'rewrite'           => false,
             'public'            => false,
         ];
-
         register_taxonomy('tta_travel_flights', ['tta_travel_offer'], $args);
+
+
+        //=====================
+        $labels = [
+            'name'              => _x('Accommodations', 'tta-travel-offer'),
+            'singular_name'     => _x('Accommodation', 'tta-travel-offer'),
+            'search_items'      => __('Search Accommodations', 'tta-travel-offer'),
+            'all_items'         => __('All Accommodations', 'tta-travel-offer'),
+            'parent_item'       => __('Parent Accommodation', 'tta-travel-offer'),
+            'parent_item_colon' => __('Parent Accommodation:', 'tta-travel-offer'),
+            'edit_item'         => __('Edit Accommodation', 'tta-travel-offer'),
+            'update_item'       => __('Update Accommodation', 'tta-travel-offer'),
+            'add_new_item'      => __('Add New Accommodation', 'tta-travel-offer'),
+            'new_item_name'     => __('New Accommodation Name', 'tta-travel-offer'),
+            'menu_name'         => __('Accommodations', 'tta-travel-offer'),
+        ];
+        $args = [
+            'hierarchical'      => true,
+            'labels'            => $labels,
+            'show_ui'           => true,
+            'show_admin_column' => true,
+            'query_var'         => true,
+            // 'rewrite'           => ['slug' => 'travel-accommodations'],
+            'rewrite'           => false,
+            'public'            => false,
+        ];
+        register_taxonomy('tta_travel_accommodations', ['tta_travel_offer'], $args);
+
+
+        //=====================
+        $labels = [
+            'name'              => _x('Excursions', 'tta-travel-offer'),
+            'singular_name'     => _x('Excursion', 'tta-travel-offer'),
+            'search_items'      => __('Search Excursions', 'tta-travel-offer'),
+            'all_items'         => __('All Excursions', 'tta-travel-offer'),
+            'parent_item'       => __('Parent Excursion', 'tta-travel-offer'),
+            'parent_item_colon' => __('Parent Excursion:', 'tta-travel-offer'),
+            'edit_item'         => __('Edit Excursion', 'tta-travel-offer'),
+            'update_item'       => __('Update Excursion', 'tta-travel-offer'),
+            'add_new_item'      => __('Add New Excursion', 'tta-travel-offer'),
+            'new_item_name'     => __('New Excursion Name', 'tta-travel-offer'),
+            'menu_name'         => __('Excursions', 'tta-travel-offer'),
+        ];
+        $args = [
+            'hierarchical'      => true,
+            'labels'            => $labels,
+            'show_ui'           => true,
+            'show_admin_column' => true,
+            'query_var'         => true,
+            // 'rewrite'           => ['slug' => 'travel-excursions'],
+            'rewrite'           => false,
+            'public'            => false,
+        ];
+        register_taxonomy('tta_travel_excursions', ['tta_travel_offer'], $args);
     }
 }

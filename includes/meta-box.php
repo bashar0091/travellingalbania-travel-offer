@@ -6,9 +6,9 @@ if (file_exists(dirname(__FILE__) . '/cmb2/init.php')) {
 	require_once dirname(__FILE__) . '/CMB2/init.php';
 }
 
-add_action('cmb2_admin_init', 'TravelAlbania_register_demo_metabox');
-
-function TravelAlbania_register_demo_metabox()
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_flight_metabox');
+function TravelAlbania_register_flight_metabox()
 {
 	$cmb_init = new_cmb2_box(array(
 		'id'            => 'TravelAlbania_flight_info',
@@ -18,9 +18,9 @@ function TravelAlbania_register_demo_metabox()
 	));
 
 	$cmb_init->add_field(array(
-		'name'       => esc_html__('Flight Name', 'tta-travel-offer'),
-		'id'         => 'flight_name',
-		'type'       => 'text',
+		'name'       => esc_html__('Price', 'tta-travel-offer'),
+		'id'         => 'price',
+		'type'       => 'text_money',
 	));
 
 	$group_id = $cmb_init->add_field([
@@ -34,9 +34,33 @@ function TravelAlbania_register_demo_metabox()
 	]);
 
 	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Flight Logo', 'tta-travel-offer'),
+		'id'         => 'flight_logo',
+		'type'       => 'file',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Flight Name', 'tta-travel-offer'),
+		'id'         => 'flight_name',
+		'type'       => 'text',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('Date', 'tta-travel-offer'),
 		'id'         => 'date',
-		'type'       => 'text_datetime_timestamp',
+		'type'       => 'text_date',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Start Time', 'tta-travel-offer'),
+		'id'         => 'start_time',
+		'type'       => 'text_time',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('End Time', 'tta-travel-offer'),
+		'id'         => 'end_time',
+		'type'       => 'text_time',
 	]);
 
 	$cmb_init->add_group_field($group_id, [
@@ -59,4 +83,95 @@ function TravelAlbania_register_demo_metabox()
 		'id'         => 'flight_class',
 		'type'       => 'text',
 	]);
+}
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_accommodation_metabox');
+function TravelAlbania_register_accommodation_metabox()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_accommodation_info',
+		'title'         => esc_html__('Accommodation Information', 'tta-travel-offer'),
+		'object_types'  => array('term'),
+		'taxonomies'       => array('tta_travel_accommodations'),
+	));
+
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Price', 'tta-travel-offer'),
+		'id'         => 'price',
+		'type'       => 'text_money',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Image', 'tta-travel-offer'),
+		'id'         => 'image',
+		'type'       => 'file',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Location', 'tta-travel-offer'),
+		'id'         => 'location',
+		'type'       => 'text',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Website', 'tta-travel-offer'),
+		'id'         => 'website',
+		'type'       => 'text',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Rating', 'tta-travel-offer'),
+		'id'         => 'rating',
+		'type'       => 'select',
+		'options'          => array(
+			'1' => __('1', 'tta-travel-offer'),
+			'2'   => __('2', 'tta-travel-offer'),
+			'3'     => __('3', 'tta-travel-offer'),
+			'4'     => __('4', 'tta-travel-offer'),
+			'5'     => __('5', 'tta-travel-offer'),
+		),
+	));
+
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Room Type', 'tta-travel-offer'),
+		'id'         => 'room_type',
+		'type'       => 'wysiwyg',
+	));
+
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Basic', 'tta-travel-offer'),
+		'id'         => 'basic',
+		'type'       => 'wysiwyg',
+	));
+}
+
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_excursion_metabox');
+function TravelAlbania_register_excursion_metabox()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_excursion_info',
+		'title'         => esc_html__('Excursion Information', 'tta-travel-offer'),
+		'object_types'  => array('term'),
+		'taxonomies'       => array('tta_travel_excursions'),
+	));
+
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Price', 'tta-travel-offer'),
+		'id'         => 'price',
+		'type'       => 'text',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Image', 'tta-travel-offer'),
+		'id'         => 'image',
+		'type'       => 'file',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Location', 'tta-travel-offer'),
+		'id'         => 'location',
+		'type'       => 'text',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Description', 'tta-travel-offer'),
+		'id'         => 'content',
+		'type'       => 'wysiwyg',
+	));
 }

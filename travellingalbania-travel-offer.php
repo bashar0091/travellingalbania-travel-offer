@@ -27,6 +27,7 @@ define('TravelAlbania_PLUGIN_URL', plugin_dir_url(__FILE__));
  */
 require_once TravelAlbania_PLUGIN_PATH . 'includes/class-admin-helper.php';
 require_once TravelAlbania_PLUGIN_PATH . 'includes/class-init-helper.php';
+require_once TravelAlbania_PLUGIN_PATH . 'includes/class-ajax.php';
 require_once TravelAlbania_PLUGIN_PATH . 'includes/meta-box.php';
 
 class TravelAlbania_Travel_Offer
@@ -41,6 +42,7 @@ class TravelAlbania_Travel_Offer
         // Initialize Classes
         new TravelAlbania_Admin_Helper();
         new TravelAlbania_Init_Helper();
+        new TravelAlbania_Ajax();
     }
 
     /**
@@ -56,6 +58,22 @@ class TravelAlbania_Travel_Offer
             'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4',
             array(),
             '1.0.0'
+        );
+
+        wp_enqueue_script(
+            'tta-custom-script',
+            TravelAlbania_PLUGIN_URL . 'assets/js/custom.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
+
+        wp_localize_script(
+            'tta-custom-script',
+            'local',
+            array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+            )
         );
     }
 }
