@@ -52,9 +52,9 @@ if (!empty($excursion_date_terms) && !is_wp_error($excursion_date_terms)) :
                     <div class="w-1/4 render_flight_btn">
                         <?php
                         if ($is_selected):
-                            $helper_cls->delete_btn($hotel_id, 'accommodations_id');
+                            $helper_cls->delete_btn($hotel_id, 'excursions_id');
                         else:
-                            $helper_cls->select_btn($hotel_id, 'accommodations_id');
+                            $helper_cls->select_btn($hotel_id, 'excursions_id');
                         endif; ?>
                     </div>
                 </div>
@@ -65,12 +65,12 @@ if (!empty($excursion_date_terms) && !is_wp_error($excursion_date_terms)) :
         echo '<br>';
     endforeach;
 else:
-    echo "No Accommodations Found";
+    echo "No Excursions Found";
 endif;
 
 ?>
 
 <div>
-    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000]" @click="setActive('flights')">Flights</span>
-    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#bf3d2a]" @click="setActive('excursions')">Excursions</span>
+    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000]" @click="setActive('accommodations')">Accommodations</span>
+    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#bf3d2a]" @click="setActive('transport')">Transport</span>
 </div>

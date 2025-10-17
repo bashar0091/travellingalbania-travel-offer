@@ -32,6 +32,7 @@ class TravelAlbania_Ajax
                 'flights_id' => [],
                 'accommodations_id' => [],
                 'excursions_id' => [],
+                'transports_id' => [],
             ];
         }
 
@@ -46,9 +47,14 @@ class TravelAlbania_Ajax
         $helper_cls->delete_btn($flight_id, $type);
         $delete_btn = ob_get_clean();
 
+        ob_start();
+        $helper_cls->render_summary();
+        $summary_content = ob_get_clean();
+
         wp_send_json_success([
             'total_price' => $total_price,
             'delete_btn' => $delete_btn,
+            'summary_content' => $summary_content,
         ]);
 
         wp_die();
@@ -79,9 +85,14 @@ class TravelAlbania_Ajax
         $helper_cls->select_btn($flight_id, $type);
         $select_btn = ob_get_clean();
 
+        ob_start();
+        $helper_cls->render_summary();
+        $summary_content = ob_get_clean();
+
         wp_send_json_success([
             'total_price' => $total_price,
             'select_btn' => $select_btn,
+            'summary_content' => $summary_content,
         ]);
 
         wp_die();

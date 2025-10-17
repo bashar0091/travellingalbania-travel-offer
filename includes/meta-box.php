@@ -175,3 +175,42 @@ function TravelAlbania_register_excursion_metabox()
 		'type'       => 'wysiwyg',
 	));
 }
+
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_transport_metabox');
+function TravelAlbania_register_transport_metabox()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_transport_info',
+		'title'         => esc_html__('Transport Information', 'tta-travel-offer'),
+		'object_types'  => array('term'),
+		'taxonomies'       => array('tta_travel_transports'),
+	));
+
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Price', 'tta-travel-offer'),
+		'id'         => 'price',
+		'type'       => 'text',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Image', 'tta-travel-offer'),
+		'id'         => 'image',
+		'type'       => 'file',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Location', 'tta-travel-offer'),
+		'id'         => 'location',
+		'type'       => 'text',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Included', 'tta-travel-offer'),
+		'id'         => 'included',
+		'type'       => 'wysiwyg',
+	));
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Excluded', 'tta-travel-offer'),
+		'id'         => 'excluded',
+		'type'       => 'wysiwyg',
+	));
+}

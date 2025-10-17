@@ -1,5 +1,6 @@
 jQuery(document).ready(function ($) {
   var offer_total_price = $(".offer_total_price");
+  var render_summary_data = $(".render_summary_data");
   var render_flight_btn = $(".render_flight_btn");
 
   // flight_on_select
@@ -21,6 +22,7 @@ jQuery(document).ready(function ($) {
       },
       success: function (response) {
         offer_total_price.text(response.data.total_price);
+        render_summary_data.html(response.data.summary_content);
         t.parent().html(response.data.delete_btn);
         console.log("Response:", response);
       },
@@ -49,6 +51,7 @@ jQuery(document).ready(function ($) {
       },
       success: function (response) {
         offer_total_price.text(response.data.total_price);
+        render_summary_data.html(response.data.summary_content);
         t.parent().html(response.data.select_btn);
         console.log("Response:", response);
       },
