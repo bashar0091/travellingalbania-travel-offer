@@ -27,8 +27,12 @@ $session_transports_id = isset($session_offer_data['transports_id']) && is_array
     : [];
 
 $post_id = get_the_ID();
+
 $menu_items = ['Program', 'Flights', 'Accommodations', 'Excursions', 'Transport', 'Summary', 'Book'];
+
 $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'program';
+
+$offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
 ?>
 <style>
     [x-cloak] {
@@ -38,8 +42,9 @@ $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'p
 
 <script src="//unpkg.com/alpinejs" defer></script>
 
-<form class="w-full e-con py-20">
-    <input type="hidden" name="offer_id" value="<?php echo esc_attr(get_the_ID()); ?>">
+<form class="w-full e-con py-20" method="POST">
+    <input type="hidden" name="offer_id" value="<?php echo esc_attr($post_id); ?>">
+    <input type="hidden" name="offer_product_id" value="<?php echo esc_attr($offer_product_id); ?>">
 
     <div class="!block e-con-inner"
         x-data="{
@@ -58,7 +63,7 @@ $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'p
          }"
         x-init="init()">
 
-        <div class="flex items-center justify-between" style="position: fixed;width: 71%;margin-top: -90px;background: #fff;left: 50%;transform: translateX(-50%);padding: 15px;">
+        <div class="flex items-center justify-between">
             <div class="inline-flex bg-[#000] rounded-lg overflow-hidden">
                 <?php foreach ($menu_items as $item) :
                     $active_class = ($active_tab === strtolower($item)) ? 'bg-[#bf3d2a]' : '';

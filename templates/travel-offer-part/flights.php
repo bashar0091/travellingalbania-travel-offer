@@ -14,6 +14,7 @@ $helper_cls = new TravelAlbania_Init_Helper;
             $name = $term->name;
             $flight_info = get_term_meta($id, 'TravelAlbania_flight_repeat', true);
 
+            $is_package_included = get_term_meta($id, 'is_package_included', true);
             $is_selected = in_array($id, $session_flights_id);
     ?>
             <div class="flex items-center gap-5 shadow-lg p-10 mb-10">
@@ -66,7 +67,9 @@ $helper_cls = new TravelAlbania_Init_Helper;
 
                 <div class="w-1/4 render_flight_btn">
                     <?php
-                    if ($is_selected):
+                    if ($is_package_included === 'yes'):
+                        echo '<b class="text-green-800">Package Included</b>';
+                    elseif ($is_selected):
                         $helper_cls->delete_btn($id, 'flights_id');
                     else:
                         $helper_cls->select_btn($id, 'flights_id');

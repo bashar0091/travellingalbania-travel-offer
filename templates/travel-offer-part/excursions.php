@@ -29,6 +29,7 @@ if (!empty($excursion_date_terms) && !is_wp_error($excursion_date_terms)) :
                 $location = get_term_meta($hotel_id, 'location', true);
                 $content = get_term_meta($hotel_id, 'content', true);
 
+                $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
                 $is_selected = in_array($hotel_id, $session_excursions_id);
         ?>
                 <div class="flex items-center gap-10 p-4 border rounded-lg shadow-md bg-white mb-5">
@@ -51,7 +52,9 @@ if (!empty($excursion_date_terms) && !is_wp_error($excursion_date_terms)) :
 
                     <div class="w-1/4 render_flight_btn">
                         <?php
-                        if ($is_selected):
+                        if ($is_package_included === 'yes'):
+                            echo '<b class="text-green-800">Package Included</b>';
+                        elseif ($is_selected):
                             $helper_cls->delete_btn($hotel_id, 'excursions_id');
                         else:
                             $helper_cls->select_btn($hotel_id, 'excursions_id');

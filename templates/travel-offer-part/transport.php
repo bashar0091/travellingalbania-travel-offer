@@ -30,6 +30,7 @@ if (!empty($transport_date_terms) && !is_wp_error($transport_date_terms)) :
                 $included = get_term_meta($hotel_id, 'included', true);
                 $excluded = get_term_meta($hotel_id, 'excluded', true);
 
+                $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
                 $is_selected = in_array($hotel_id, $session_transports_id);
         ?>
                 <div class="flex items-center gap-10 p-4 border rounded-lg shadow-md bg-white mb-5">
@@ -60,7 +61,9 @@ if (!empty($transport_date_terms) && !is_wp_error($transport_date_terms)) :
 
                     <div class="w-1/4 render_flight_btn">
                         <?php
-                        if ($is_selected):
+                        if ($is_package_included === 'yes'):
+                            echo '<b class="text-green-800">Package Included</b>';
+                        elseif ($is_selected):
                             $helper_cls->delete_btn($hotel_id, 'transports_id');
                         else:
                             $helper_cls->select_btn($hotel_id, 'transports_id');

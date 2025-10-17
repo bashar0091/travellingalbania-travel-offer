@@ -23,6 +23,17 @@ function TravelAlbania_register_flight_metabox()
 		'type'       => 'text_money',
 	));
 
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Is Package Included', 'tta-travel-offer'),
+		'id'         => 'is_package_included',
+		'type'       => 'radio_inline',
+		'options' => array(
+			'yes' => __('Yes', 'tta-travel-offer'),
+			'no'   => __('No', 'tta-travel-offer'),
+		),
+		'default' => 'no',
+	));
+
 	$group_id = $cmb_init->add_field([
 		'id'          => 'TravelAlbania_flight_repeat',
 		'type'        => 'group',
@@ -97,6 +108,17 @@ function TravelAlbania_register_accommodation_metabox()
 	));
 
 	$cmb_init->add_field(array(
+		'name'       => esc_html__('Is Package Included', 'tta-travel-offer'),
+		'id'         => 'is_package_included',
+		'type'       => 'radio_inline',
+		'options' => array(
+			'yes' => __('Yes', 'tta-travel-offer'),
+			'no'   => __('No', 'tta-travel-offer'),
+		),
+		'default' => 'no',
+	));
+
+	$cmb_init->add_field(array(
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
 		'type'       => 'text_money',
@@ -155,6 +177,17 @@ function TravelAlbania_register_excursion_metabox()
 	));
 
 	$cmb_init->add_field(array(
+		'name'       => esc_html__('Is Package Included', 'tta-travel-offer'),
+		'id'         => 'is_package_included',
+		'type'       => 'radio_inline',
+		'options' => array(
+			'yes' => __('Yes', 'tta-travel-offer'),
+			'no'   => __('No', 'tta-travel-offer'),
+		),
+		'default' => 'no',
+	));
+
+	$cmb_init->add_field(array(
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
 		'type'       => 'text',
@@ -189,6 +222,17 @@ function TravelAlbania_register_transport_metabox()
 	));
 
 	$cmb_init->add_field(array(
+		'name'       => esc_html__('Is Package Included', 'tta-travel-offer'),
+		'id'         => 'is_package_included',
+		'type'       => 'radio_inline',
+		'options' => array(
+			'yes' => __('Yes', 'tta-travel-offer'),
+			'no'   => __('No', 'tta-travel-offer'),
+		),
+		'default' => 'no',
+	));
+
+	$cmb_init->add_field(array(
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
 		'type'       => 'text',
@@ -213,4 +257,47 @@ function TravelAlbania_register_transport_metabox()
 		'id'         => 'excluded',
 		'type'       => 'wysiwyg',
 	));
+}
+
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_offer_metabox');
+function TravelAlbania_register_offer_metabox()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_offer_field',
+		'title'         => esc_html__('Extra Field', 'tta-travel-offer'),
+		'object_types'  => array('tta_travel_offer'),
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Connect With WooCommerce', 'tta-travel-offer'),
+		'id'      => 'connect_woocommerce',
+		'type'    => 'select',
+		'options' => TravelAlbania_get_woocommerce_products(),
+		'default' => '',
+	));
+}
+function TravelAlbania_get_woocommerce_products()
+{
+	if (!class_exists('WooCommerce')) {
+		return array('' => 'WooCommerce not active');
+	}
+
+	$args = array(
+		'post_type'      => 'product',
+		'posts_per_page' => -1,
+		'post_status'    => 'publish',
+		'orderby'        => 'title',
+		'order'          => 'ASC',
+	);
+
+	$products = get_posts($args);
+	$options = array('' => '-- Select Product --');
+
+	foreach ($products as $product) {
+		$options[$product->ID] = $product->post_title;
+	}
+
+	return $options;
 }
