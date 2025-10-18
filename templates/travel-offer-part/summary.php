@@ -62,6 +62,6 @@
 </div>
 
 <div>
-    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000]" @click="setActive('transport')">Transport</span>
-    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#bf3d2a]" @click="setActive('book')">Book</span>
+    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="transport">Transport</span>
+    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#bf3d2a] offer_tab_onclick" data-tabid="book">Book</span>
 </div>

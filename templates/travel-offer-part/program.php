@@ -4,5 +4,5 @@ echo do_shortcode('[elementor-template id="' . $template_id . '"]');
 ?>
 
 <div>
-    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000]" @click="setActive('flights')">Flights</span>
+    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="flights">Flights</span>
 </div>

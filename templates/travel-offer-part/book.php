@@ -38,6 +38,6 @@
 </div>
 
 <div>
-    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000]" @click="setActive('summary')">Summary</span>
+    <span class="select-none cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="summary">Summary</span>
     <button type="submit" name="offer_booking_submit" class="!rounded-none !text-[13px] select-none cursor-pointer !text-white inline-block p-[10px_20px] !bg-[#bf3d2a]">Confirm Booking</button>
 </div>

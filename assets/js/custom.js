@@ -60,4 +60,25 @@ jQuery(document).ready(function ($) {
       },
     });
   });
+
+  //=====================
+  $(document).on("click", ".offer_tab_onclick", function (e) {
+    e.preventDefault();
+
+    var t = $(this);
+    var tabid = t.data("tabid");
+    var offer_tab_top = $(".offer_tab_top");
+    var offer_content_display = $(".offer_content_display");
+
+    offer_tab_top.removeClass("active");
+    offer_tab_top.filter(`[data-tabid="${tabid}"]`).addClass("active");
+
+    var url = new URL(window.location.href);
+    url.searchParams.set("active", tabid);
+
+    window.history.replaceState(null, null, url.toString());
+
+    offer_content_display.hide();
+    $(`[data-showid="${tabid}"]`).show();
+  });
 });

@@ -34,47 +34,37 @@ $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'p
 
 $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
 ?>
+
 <style>
-    [x-cloak] {
-        display: none !important;
+    .offer_tab_top.active {
+        background: #bf3d2a;
     }
 </style>
-
-<script src="//unpkg.com/alpinejs" defer></script>
 
 <form class="w-full e-con py-20" method="POST">
     <input type="hidden" name="offer_id" value="<?php echo esc_attr($post_id); ?>">
     <input type="hidden" name="offer_product_id" value="<?php echo esc_attr($offer_product_id); ?>">
 
-    <div class="!block e-con-inner"
-        x-data="{
-            active: '<?php echo esc_js($active_tab); ?>',
-            init() {
-                const params = new URLSearchParams(window.location.search);
-                const q = params.get('active');
-                if (q) this.active = q;
-            },
-            setActive(tab) {
-                this.active = tab;
-                const url = new URL(window.location);
-                url.searchParams.set('active', tab);
-                window.history.pushState({}, '', url);
-            }
-         }"
-        x-init="init()">
+    <div class="!block e-con-inner">
 
         <div class="flex items-center justify-between">
             <div class="inline-flex bg-[#000] rounded-lg overflow-hidden">
-                <?php foreach ($menu_items as $item) :
-                    $active_class = ($active_tab === strtolower($item)) ? 'bg-[#bf3d2a]' : '';
+                <?php
+                foreach ($menu_items as $item) :
+
+                    $active_class = '';
+                    if ($active_tab === strtolower($item)) {
+                        $active_class = 'active';
+                    }
+
                 ?>
                     <span
-                        class="select-none cursor-pointer hover:bg-[#bf3d2a] inline-block p-[15px_25px] text-white transition-colors <?php echo $active_class; ?>"
-                        :class="{ 'bg-[#bf3d2a]': active === '<?php echo esc_js(strtolower($item)); ?>' }"
-                        @click="setActive('<?php echo esc_js(strtolower($item)); ?>')">
+                        class="select-none cursor-pointer hover:bg-[#bf3d2a] inline-block p-[15px_25px] text-white transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($item)); ?>">
                         <?php echo esc_html($item); ?>
                     </span>
-                <?php endforeach; ?>
+                <?php
+                endforeach;
+                ?>
             </div>
 
             <div>
@@ -100,8 +90,15 @@ $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
         ?>
 
         <div class="mt-8">
-            <?php foreach ($tabs as $tab): ?>
-                <div x-show="active === '<?= $tab ?>'" <?php if ($active_tab !== $tab) echo 'x-cloak'; ?>>
+            <?php
+            foreach ($tabs as $tab):
+
+                $show_display = 'none';
+                if ($tab === $active_tab) {
+                    $show_display = 'block';
+                }
+            ?>
+                <div class="offer_content_display" data-showid="<?php echo esc_attr($tab); ?>" style="display: <?php echo esc_attr($show_display); ?>">
                     <?php include(TravelAlbania_PLUGIN_PATH . 'templates/travel-offer-part/' . $tab . '.php'); ?>
                 </div>
             <?php endforeach; ?>
