@@ -271,6 +271,14 @@ function TravelAlbania_register_offer_metabox()
 	));
 
 	$cmb_init->add_field(array(
+		'name'    => esc_html__('Program Template', 'tta-travel-offer'),
+		'id'      => 'elementor_program_template',
+		'type'    => 'select',
+		'options' => TravelAlbania_get_elementor_template(),
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
 		'name'    => esc_html__('Connect With WooCommerce', 'tta-travel-offer'),
 		'id'      => 'connect_woocommerce',
 		'type'    => 'select',
@@ -297,6 +305,30 @@ function TravelAlbania_get_woocommerce_products()
 
 	foreach ($products as $product) {
 		$options[$product->ID] = $product->post_title;
+	}
+
+	return $options;
+}
+
+function TravelAlbania_get_elementor_template()
+{
+	// if (!class_exists('Elementor')) {
+	// 	return array('' => 'Elementor not active');
+	// }
+
+	$args = array(
+		'post_type'      => 'elementor_library',
+		'posts_per_page' => -1,
+		'post_status'    => 'publish',
+		'orderby'        => 'title',
+		'order'          => 'ASC',
+	);
+
+	$templates = get_posts($args);
+	$options = array('' => '-- Select Template --');
+
+	foreach ($templates as $template) {
+		$options[$template->ID] = $template->post_title;
 	}
 
 	return $options;
