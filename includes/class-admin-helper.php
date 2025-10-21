@@ -11,6 +11,16 @@ class TravelAlbania_Admin_Helper
     {
         add_action('init', [$this, 'post_type']);
         add_action('init', [$this, 'taxonomy_register']);
+
+        // post.php , category order fix
+        add_filter('wp_terms_checklist_args', [$this, 'checklist_args']);
+    }
+
+    // post.php , category order fix
+    public function checklist_args($args)
+    {
+        $args['checked_ontop'] = false;
+        return $args;
     }
 
     public function post_type()
