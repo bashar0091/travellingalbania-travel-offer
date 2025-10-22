@@ -138,18 +138,19 @@ function TravelAlbania_register_accommodation_metabox()
 		'id'         => 'website',
 		'type'       => 'text',
 	));
+
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Rating', 'tta-travel-offer'),
 		'id'         => 'rating',
-		'type'       => 'select',
-		'options'          => array(
-			'1' => __('1', 'tta-travel-offer'),
-			'2'   => __('2', 'tta-travel-offer'),
-			'3'     => __('3', 'tta-travel-offer'),
-			'4'     => __('4', 'tta-travel-offer'),
-			'5'     => __('5', 'tta-travel-offer'),
+		'type'       => 'text_small',
+		'attributes' => array(
+			'type'  => 'number',
+			'min'   => 0,
+			'max'   => 5,
+			'step'  => 0.1,
 		),
 	));
+
 
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Room Type', 'tta-travel-offer'),
@@ -266,7 +267,7 @@ function TravelAlbania_register_offer_metabox()
 {
 	$cmb_init = new_cmb2_box(array(
 		'id'            => 'TravelAlbania_offer_field',
-		'title'         => esc_html__('Extra Field', 'tta-travel-offer'),
+		'title'         => esc_html__('Offer Field', 'tta-travel-offer'),
 		'object_types'  => array('tta_travel_offer'),
 	));
 
@@ -283,6 +284,34 @@ function TravelAlbania_register_offer_metabox()
 		'id'      => 'connect_woocommerce',
 		'type'    => 'select',
 		'options' => TravelAlbania_get_woocommerce_products(),
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Departure', 'tta-travel-offer'),
+		'id'      => 'departure',
+		'type'    => 'text_date',
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Return', 'tta-travel-offer'),
+		'id'      => 'return',
+		'type'    => 'text_date',
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Number of people', 'tta-travel-offer'),
+		'id'      => 'number_of_people',
+		'type'    => 'text',
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Package Cost', 'tta-travel-offer'),
+		'id'      => 'package_cost',
+		'type'    => 'text',
 		'default' => '',
 	));
 }
@@ -330,6 +359,138 @@ function TravelAlbania_get_elementor_template()
 	foreach ($templates as $template) {
 		$options[$template->ID] = $template->post_title;
 	}
+
+	return $options;
+}
+
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_accommodations_field');
+function TravelAlbania_register_accommodations_field()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_accommodations_field',
+		'title'         => esc_html__('Select Accommodations by Date', 'tta-travel-offer'),
+		'object_types'  => array('tta_travel_offer'),
+	));
+
+	$group_id = $cmb_init->add_field([
+		'id'          => 'TravelAlbania_accommodations_repeat',
+		'type'        => 'group',
+		'options'     => [
+			'group_title'   => esc_html__('Accommodation {#}', 'tta-travel-offer'),
+			'add_button'    => esc_html__('Add', 'tta-travel-offer'),
+			'remove_button' => esc_html__('Remove', 'tta-travel-offer'),
+			'closed'         => true,
+		],
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Start Date', 'tta-travel-offer'),
+		'id'         => 'start_date',
+		'type'       => 'text_date',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('End Date', 'tta-travel-offer'),
+		'id'         => 'end_date',
+		'type'       => 'text_date',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Select Accommodation', 'tta-travel-offer'),
+		'id'         => 'accommodation_select',
+		'type'    => 'multicheck',
+		'options' => fetch_taxonomy('tta_travel_accommodations'),
+	]);
+}
+
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_excursions_field');
+function TravelAlbania_register_excursions_field()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_excursions_field',
+		'title'         => esc_html__('Select Excursions by Date', 'tta-travel-offer'),
+		'object_types'  => array('tta_travel_offer'),
+	));
+
+	$group_id = $cmb_init->add_field([
+		'id'          => 'TravelAlbania_excursions_repeat',
+		'type'        => 'group',
+		'options'     => [
+			'group_title'   => esc_html__('Excursion {#}', 'tta-travel-offer'),
+			'add_button'    => esc_html__('Add', 'tta-travel-offer'),
+			'remove_button' => esc_html__('Remove', 'tta-travel-offer'),
+			'closed'         => true,
+		],
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Date', 'tta-travel-offer'),
+		'id'         => 'date',
+		'type'       => 'text_date',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Select Accommodation', 'tta-travel-offer'),
+		'id'         => 'excursion_select',
+		'type'    => 'multicheck',
+		'options' => fetch_taxonomy('tta_travel_excursions'),
+	]);
+}
+
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_transports_field');
+function TravelAlbania_register_transports_field()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_transports_field',
+		'title'         => esc_html__('Select Transports by Date', 'tta-travel-offer'),
+		'object_types'  => array('tta_travel_offer'),
+	));
+
+	$group_id = $cmb_init->add_field([
+		'id'          => 'TravelAlbania_transports_repeat',
+		'type'        => 'group',
+		'options'     => [
+			'group_title'   => esc_html__('Transport {#}', 'tta-travel-offer'),
+			'add_button'    => esc_html__('Add', 'tta-travel-offer'),
+			'remove_button' => esc_html__('Remove', 'tta-travel-offer'),
+			'closed'         => true,
+		],
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Date', 'tta-travel-offer'),
+		'id'         => 'date',
+		'type'       => 'text_date',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Select Accommodation', 'tta-travel-offer'),
+		'id'         => 'transport_select',
+		'type'    => 'multicheck',
+		'options' => fetch_taxonomy('tta_travel_transports'),
+	]);
+}
+
+function fetch_taxonomy($taxname)
+{
+	$options = array();
+
+	$taxonomies = get_terms(array(
+		'taxonomy' => $taxname,
+		'hide_empty' => false
+	));
+
+	if (!empty($taxonomies)) :
+		foreach ($taxonomies as $item):
+			$options[$item->term_id] = $item->name;
+		endforeach;
+	endif;
 
 	return $options;
 }

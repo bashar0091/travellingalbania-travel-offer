@@ -60,6 +60,16 @@ class TravelAlbania_Travel_Offer
             '1.0.0'
         );
 
+        if (is_singular('tta_travel_offer')) {
+            wp_enqueue_style(
+                'tta-custom-style',
+                TravelAlbania_PLUGIN_URL . 'assets//css/custom.css',
+                array(),
+                '1.0.0'
+            );
+        }
+
+
         wp_enqueue_script(
             'tta-custom-script',
             TravelAlbania_PLUGIN_URL . 'assets/js/custom.js',

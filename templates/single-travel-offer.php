@@ -28,39 +28,95 @@ $session_transports_id = isset($session_offer_data['transports_id']) && is_array
 
 $post_id = get_the_ID();
 
-$menu_items = ['Program', 'Flights', 'Accommodations', 'Excursions', 'Transport', 'Summary', 'Book'];
+$menu_items = [
+    'Program' => 'fa fa-briefcase',
+    'Flights' => 'fa fa-plane',
+    'Accommodations' => 'fa fa-building',
+    'Excursions' => 'fa fa-compass',
+    'Transport' => 'fa fa-car',
+    'Summary' => 'fa fa-file-text',
+    'Book' => 'fa fa-calendar'
+];
 
 $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'program';
 
 $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
+$logo =  plugin_dir_url(__FILE__) . "../assets/img/black-logo.webp";
 ?>
 
 <style>
+    .offer_tab_top {
+        position: relative;
+        z-index: 1;
+    }
+
     .offer_tab_top.active {
-        background: #bf3d2a;
+        background: var(--custom_main_color);
+        color: #fff;
+        z-index: 2;
+    }
+
+    .offer_tab_top.active::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -20px;
+        width: 22px;
+        height: 100%;
+        background: var(--custom_main_color);
+        clip-path: polygon(10% 0, 100% 50%, 10% 98%, 0% 100%, 0 52%, 0% 0%);
+        z-index: 3;
+    }
+
+    .offer_tab_top.active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -1px;
+        width: 22px;
+        height: 100%;
+        clip-path: polygon(100% 50%, 0 0, 0 100%);
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+        background: #fff;
+        z-index: 4;
+    }
+
+    .offer_tab_top i {
+        visibility: hidden;
+    }
+
+    .offer_tab_top.active i {
+        display: inline-block;
+        visibility: visible;
+        padding-left: 20px;
     }
 </style>
 
-<form class="w-full e-con py-20" method="POST">
+<form class="w-full" method="POST">
     <input type="hidden" name="offer_id" value="<?php echo esc_attr($post_id); ?>">
     <input type="hidden" name="offer_product_id" value="<?php echo esc_attr($offer_product_id); ?>">
 
-    <div class="!block e-con-inner">
+    <div class="!block">
 
-        <div class="flex items-center justify-between">
-            <div class="inline-flex bg-[#000] rounded-lg overflow-hidden">
+        <div class="flex items-center h-15 justify-between px-8 albania-custom-header">
+            <div>
+                <img class="logo w-[150px] px-5" src="<?php echo esc_url($logo) ?>" alt="logo">
+            </div>
+            <div class="inline-flex h-full overflow-hidden gap-10 w-[1300px] mx-auto">
                 <?php
-                foreach ($menu_items as $item) :
+                foreach ($menu_items as  $key => $item) :
 
                     $active_class = '';
-                    if ($active_tab === strtolower($item)) {
+                    if ($active_tab === strtolower($key)) {
                         $active_class = 'active';
                     }
 
                 ?>
                     <span
-                        class="select-none cursor-pointer hover:bg-[#bf3d2a] inline-block p-[15px_25px] text-white transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($item)); ?>">
-                        <?php echo esc_html($item); ?>
+                        class="select-none cursor-pointer inline-block p-[15px_25px] transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($key)); ?>">
+                        <i class="<?php echo esc_attr($item); ?>"></i>
+                        <?php echo esc_html($key); ?>
                     </span>
                 <?php
                 endforeach;
@@ -72,7 +128,7 @@ $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
                 $helper_cls = new TravelAlbania_Init_Helper();
                 $total_price = $helper_cls->price_calculation();
                 ?>
-                Total price: € <span class="offer_total_price"><?php echo wp_kses_post($total_price); ?></span> р.р.
+                Total price: <b>€</b><span class="offer_total_price font-bold"><?php echo wp_kses_post($total_price); ?></span> P.P.
             </div>
         </div>
 
@@ -89,7 +145,7 @@ $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
         ];
         ?>
 
-        <div class="mt-8">
+        <div>
             <?php
             foreach ($tabs as $tab):
 

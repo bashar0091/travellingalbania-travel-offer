@@ -24,7 +24,6 @@ jQuery(document).ready(function ($) {
         offer_total_price.text(response.data.total_price);
         render_summary_data.html(response.data.summary_content);
         t.parent().html(response.data.delete_btn);
-        console.log("Response:", response);
       },
       error: function (xhr, status, error) {
         console.error("AJAX Error:", error);
@@ -53,7 +52,6 @@ jQuery(document).ready(function ($) {
         offer_total_price.text(response.data.total_price);
         render_summary_data.html(response.data.summary_content);
         t.parent().html(response.data.select_btn);
-        console.log("Response:", response);
       },
       error: function (xhr, status, error) {
         console.error("AJAX Error:", error);
