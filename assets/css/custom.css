@@ -1,0 +1,50 @@
+:root {
+  --custom_main_color: #e73017;
+}
+
+header#site-header,
+footer#site-footer {
+  display: none !important;
+}
+
+.fly-table table tbody > tr:nth-child(odd) > td {
+  background-color: transparent;
+}
+
+.fly-table:hover table tbody > tr:nth-child(odd) > td {
+  background-color: transparent;
+}
+
+.fly-table:hover table tbody > tr:nth-child(even) > td {
+  background-color: transparent;
+}
+
+.lagasna td {
+  border: none;
+  padding-bottom: 50px;
+  /* text-align: center; */
+}
+
+.lagaborder td {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  /* text-align: start; */
+}
+
+button.flight_on_select {
+  border: 1px solid #e73017;
+  color: #e73017;
+  padding: 10px 56px;
+}
+
+button.flight_on_select:hover {
+  background-color: #e73017;
+}
+
+.flight_on_delete:hover i,
+.flight_on_delete:hover p,
+.flight_on_delete:hover {
+  color: #fff !important;
+  border-color: #e73017 !important;
+}

@@ -138,18 +138,21 @@ function TravelAlbania_register_accommodation_metabox()
 		'id'         => 'website',
 		'type'       => 'text',
 	));
+
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Rating', 'tta-travel-offer'),
 		'id'         => 'rating',
-		'type'       => 'select',
-		'options'          => array(
-			'1' => __('1', 'tta-travel-offer'),
-			'2'   => __('2', 'tta-travel-offer'),
-			'3'     => __('3', 'tta-travel-offer'),
-			'4'     => __('4', 'tta-travel-offer'),
-			'5'     => __('5', 'tta-travel-offer'),
+		'type'       => 'text_small',
+		'attributes' => array(
+			'type'  => 'number',
+			'min'   => 0,
+			'max'   => 5,
+			'step'  => 0.1,
 		),
+		// 'sanitization_cb' => 'absint',
+		// 'escape_cb'       => 'absint',
 	));
+
 
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Room Type', 'tta-travel-offer'),
@@ -283,6 +286,34 @@ function TravelAlbania_register_offer_metabox()
 		'id'      => 'connect_woocommerce',
 		'type'    => 'select',
 		'options' => TravelAlbania_get_woocommerce_products(),
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Departure', 'tta-travel-offer'),
+		'id'      => 'departure',
+		'type'    => 'text_date',
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Return', 'tta-travel-offer'),
+		'id'      => 'return',
+		'type'    => 'text_date',
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Number of people', 'tta-travel-offer'),
+		'id'      => 'number_of_people',
+		'type'    => 'text',
+		'default' => '',
+	));
+
+	$cmb_init->add_field(array(
+		'name'    => esc_html__('Package Cost', 'tta-travel-offer'),
+		'id'      => 'package_cost',
+		'type'    => 'text',
 		'default' => '',
 	));
 }

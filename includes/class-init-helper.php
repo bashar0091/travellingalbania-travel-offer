@@ -67,9 +67,9 @@ class TravelAlbania_Init_Helper
     public function delete_btn($id, $type)
     {
 ?>
-        <div class="flex items-center gap-5">
-            <p class="text-green-800 !font-bold !mb-0">Choosen</p>
-            <button type="button" class="flight_on_delete !bg-red-600 !p-2" data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">Delete</button>
+        <div class="flight_on_delete flex items-center gap-5 border border-green-800 px-[30px] py-[10px] rounded-sm cursor-pointer hover:!bg-[#e73017] transition duration-200" data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">
+            <p class="text-green-800 !mb-0 transition duration-200">Choosen</p>
+            <i class="fa fa-trash text-[#e73017] cursor-pointer !p-0 !border-none transition duration-200"></i>
         </div>
     <?php
     }
@@ -183,12 +183,15 @@ class TravelAlbania_Init_Helper
             if (!empty($combined_ids)):
         ?>
                 <div class="mt-10">
-                    <h4 class="!mb-3"><?= esc_html($label) ?></h4>
+                    <h4 class="!mb-3 !text-lg"><?= esc_html($label) ?></h4>
                     <?php foreach ($combined_ids as $term_id):
                         $term = get_term($term_id, $data['taxonomy']);
                         $title = (!is_wp_error($term) && $term) ? $term->name : 'Unknown';
                     ?>
-                        <div class="shadow-md p-3 mb-3"><?= esc_html($title) ?></div>
+                        <div class="flex items-center gap-2 shadow-md p-3 mb-3 rounded-lg ring ring-[#80808012] shadow-m">
+                            <i class="fa fa-check-circle text-green-800" aria-hidden="true"></i>
+                            <div><?= esc_html($title) ?></div>
+                        </div>
                     <?php endforeach; ?>
                 </div>
 <?php
