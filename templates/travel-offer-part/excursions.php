@@ -21,109 +21,94 @@ $helper_cls = new TravelAlbania_Init_Helper;
     if (!empty($excursion_date) && !is_wp_error($excursion_date)) :
         foreach ($excursion_date as $date) :
             $date_name = get_gmt_from_date($date['date'], 'd F');
-            $excursion_select = $date['excursion_select'];
+            $excursion_select = !empty($date['excursion_select']) ? $date['excursion_select'] : null;
     ?>
 
-            <div class="max-w-[1300px] mx-auto px-5">
+            <div class="mb-10 max-w-[1300px] mx-auto px-5">
 
-                <h4 class="!mb-5"><?php echo wp_kses_post($date_name); ?></h4>
+                <h4 class="!mb-3 !text-lg"><?php echo wp_kses_post($date_name); ?></h4>
 
                 <?php
+                if (!empty($excursion_select)):
 
-                $excursion_hotel_terms = get_terms(array(
-                    'taxonomy' => 'tta_travel_excursions',
-                    'include' => $excursion_select,
-                    'hide_empty' => false,
-                ));
+                    $excursion_hotel_terms = get_terms(array(
+                        'taxonomy' => 'tta_travel_excursions',
+                        'include' => $excursion_select,
+                        'hide_empty' => false,
+                    ));
 
+                    if (!empty($excursion_hotel_terms) && !is_wp_error($excursion_hotel_terms)) :
 
-
-
-
-                if (!empty($excursion_hotel_terms) && !is_wp_error($excursion_hotel_terms)) :
-
-                    $i = 0;
-
-                    foreach ($excursion_hotel_terms as $hotel) :
-                        $hotel_id = $hotel->term_id;
-                        $title = $hotel->name;
-                        $image = get_term_meta($hotel_id, 'image', true);
-                        $price = get_term_meta($hotel_id, 'price', true);
-                        $location = get_term_meta($hotel_id, 'location', true);
-                        $content = get_term_meta($hotel_id, 'content', true);
-                        $is_first_hotel = ($i === 0);
-                        $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
-                        $is_selected = in_array($hotel_id, $session_excursions_id);
-
-                        $i = 1;
-                        $i <= 5;
-                        $i++
+                        foreach ($excursion_hotel_terms as $hotel) :
+                            $hotel_id = $hotel->term_id;
+                            $title = $hotel->name;
+                            $image = get_term_meta($hotel_id, 'image', true);
+                            $price = get_term_meta($hotel_id, 'price', true);
+                            $location = get_term_meta($hotel_id, 'location', true);
+                            $content = get_term_meta($hotel_id, 'content', true);
+                            $is_first_hotel = ($i === 0);
+                            $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
+                            $is_selected = in_array($hotel_id, $session_excursions_id);
                 ?>
-                        <?php if (!$is_first_hotel) : ?>
-                            <div class="max-w-[1300px] mx-auto px-5">
-                            <?php endif; ?>
 
-                            <div class="mt-5 flex items-center gap-10 rounded-lg ring ring-[#80808012] shadow-md">
-                                <div class="flex items-center justify-between">
-                                    <div class="w-3/4 flex items-center border-r-1 border-[#80808057] pr-10 pl-5">
-                                        <div class="w-1/4 flex-shrink-0 mr-4 pt-5 pb-5">
-                                            <div class="bg-gray-200 rounded-md">
-                                                <img class="w-full !h-[130px] object-cover rounded-md" src="<?php echo esc_url($image); ?>" alt="">
-                                            </div>
-                                        </div>
-                                        <div class="w-3/4 flex-grow flex-1">
-                                            <h3 class="font-semibold !text-sm !mb-1"><?php echo wp_kses_post($title); ?></h3>
-                                            <p class="text-sm text-gray-600 !mb-1">
-                                                <i class="mr-1 fa fa-map-marker text-[var(--custom_main_color)]" aria-hidden="true"></i> <?php echo wp_kses_post($location); ?>
-                                            </p>
-                                            <div class="text-sm mt-2">
-                                                <?php echo wpautop(wp_kses_post($content)); ?>
-                                            </div>
+                            <div class="mb-5 flex items-center gap-10 rounded-lg ring ring-[#80808012] shadow-md">
+                                <div class="w-3/4 flex items-center border-r-1 border-[#80808057] pr-10 pl-5">
+                                    <div class="w-1/4 flex-shrink-0 mr-4 pt-5 pb-5">
+                                        <div class="bg-gray-200 rounded-md">
+                                            <img class="w-full !h-[130px] object-cover rounded-md" src="<?php echo esc_url($image); ?>" alt="">
                                         </div>
                                     </div>
-                                    <div class="flex flex-col gap-2 items-center w-1/4 justify-center">
-                                        <div class="render_flight_btn">
-                                            <?php
-                                            if ($is_package_included === 'yes'):
-                                                echo '<span class="text-green-800">Package Included</span>';
-                                            elseif ($is_selected):
-                                                $helper_cls->delete_btn($hotel_id, 'excursions_id');
-                                            else:
-                                                $helper_cls->select_btn($hotel_id, 'excursions_id');
-                                            endif; ?>
+                                    <div class="w-3/4 flex-grow flex-1">
+                                        <h3 class="font-semibold !text-sm !mb-1"><?php echo wp_kses_post($title); ?></h3>
+                                        <p class="text-sm text-gray-600 !mb-1">
+                                            <i class="mr-1 fa fa-map-marker text-[var(--custom_main_color)]" aria-hidden="true"></i> <?php echo wp_kses_post($location); ?>
+                                        </p>
+                                        <div class="text-sm mt-2">
+                                            <?php echo wpautop(wp_kses_post($content)); ?>
                                         </div>
-                                        <?php
-                                        if ($is_package_included !== 'yes' && $price) :
-                                            echo '<span>+ €' . number_format((float)$price, 2) . '</span>';
-                                        endif;
-                                        ?>
                                     </div>
                                 </div>
+                                <div class="flex flex-col gap-2 items-center w-1/4 justify-center">
+                                    <div class="render_flight_btn">
+                                        <?php
+                                        if ($is_package_included === 'yes'):
+                                            echo '<span class="text-green-800">Package Included</span>';
+                                        elseif ($is_selected):
+                                            $helper_cls->delete_btn($hotel_id, 'excursions_id');
+                                        else:
+                                            $helper_cls->select_btn($hotel_id, 'excursions_id');
+                                        endif; ?>
+                                    </div>
+
+                                    <span>
+                                        <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
+                                        €
+                                        <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Person
+                                    </span>
+                                </div>
                             </div>
-                            </div>
-                            <?php if (!$is_first_hotel) : ?>
-            </div>
-        <?php endif; ?>
-<?php
-                    endforeach;
+                <?php
+                        endforeach;
+                    endif;
                 endif;
+                ?>
+            </div>
+    <?php
+        endforeach;
+    else:
+        echo "No Excursions Found";
+    endif;
 
-                echo '<br>';
-            endforeach;
-        else:
-            echo "No Excursions Found";
-        endif;
+    ?>
 
-?>
-
-<div class="mt-8 w-[1300px] px-5 mx-auto mb-8">
-    <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="accommodations">
-        <i class="fa fa-arrow-left"></i>
-        <span>Accommodations</span>
+    <div class="mt-8 w-[1300px] px-5 mx-auto mb-8">
+        <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="accommodations">
+            <i class="fa fa-arrow-left"></i>
+            <span>Accommodations</span>
+        </div>
+        <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#e73017] offer_tab_onclick" data-tabid="transport">
+            <span>Transport</span>
+            <i class="fa fa-arrow-right"></i>
+        </div>
     </div>
-    <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#e73017] offer_tab_onclick" data-tabid="transport">
-        <span>Transport</span>
-        <i class="fa fa-arrow-right"></i>
-    </div>
-</div>
 </div>

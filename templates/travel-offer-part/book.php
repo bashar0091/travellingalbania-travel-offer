@@ -24,15 +24,15 @@
                 </tr>
                 <tr>
                     <th>Number of people:</th>
-                    <td>5</td>
+                    <td><?php echo esc_html($people) ?></td>
                 </tr>
                 <tr>
                     <th>Price per person:</th>
-                    <td>€1214.00</td>
+                    <td>€<?php echo wp_kses_post($price_per_person); ?></td>
                 </tr>
                 <tr>
                     <th>Total cost:</th>
-                    <td>€6,070.00</td>
+                    <td>€<?php echo wp_kses_post($price_final); ?></td>
                 </tr>
             </table>
         </div>

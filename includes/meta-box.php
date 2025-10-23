@@ -21,6 +21,7 @@ function TravelAlbania_register_flight_metabox()
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
 		'type'       => 'text_money',
+		'desc' => '/ Person',
 	));
 
 	$cmb_init->add_field(array(
@@ -122,6 +123,7 @@ function TravelAlbania_register_accommodation_metabox()
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
 		'type'       => 'text_money',
+		'desc' => '/ Room',
 	));
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Image', 'tta-travel-offer'),
@@ -155,13 +157,13 @@ function TravelAlbania_register_accommodation_metabox()
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Room Type', 'tta-travel-offer'),
 		'id'         => 'room_type',
-		'type'       => 'wysiwyg',
+		'type'       => 'textarea',
 	));
 
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Basic', 'tta-travel-offer'),
 		'id'         => 'basic',
-		'type'       => 'wysiwyg',
+		'type'       => 'textarea',
 	));
 }
 
@@ -191,7 +193,8 @@ function TravelAlbania_register_excursion_metabox()
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
-		'type'       => 'text',
+		'type'       => 'text_money',
+		'desc' => '/ Person',
 	));
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Image', 'tta-travel-offer'),
@@ -206,7 +209,7 @@ function TravelAlbania_register_excursion_metabox()
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Description', 'tta-travel-offer'),
 		'id'         => 'content',
-		'type'       => 'wysiwyg',
+		'type'       => 'textarea',
 	));
 }
 
@@ -236,7 +239,8 @@ function TravelAlbania_register_transport_metabox()
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Price', 'tta-travel-offer'),
 		'id'         => 'price',
-		'type'       => 'text',
+		'type'       => 'text_money',
+		'desc' => '/ Day',
 	));
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Image', 'tta-travel-offer'),
@@ -304,13 +308,6 @@ function TravelAlbania_register_offer_metabox()
 	$cmb_init->add_field(array(
 		'name'    => esc_html__('Number of people', 'tta-travel-offer'),
 		'id'      => 'number_of_people',
-		'type'    => 'text',
-		'default' => '',
-	));
-
-	$cmb_init->add_field(array(
-		'name'    => esc_html__('Package Cost', 'tta-travel-offer'),
-		'id'      => 'package_cost',
 		'type'    => 'text',
 		'default' => '',
 	));
@@ -382,6 +379,7 @@ function TravelAlbania_register_accommodations_field()
 			'add_button'    => esc_html__('Add', 'tta-travel-offer'),
 			'remove_button' => esc_html__('Remove', 'tta-travel-offer'),
 			'closed'         => true,
+			'sortable'		=> true,
 		],
 	]);
 
@@ -424,6 +422,7 @@ function TravelAlbania_register_excursions_field()
 			'add_button'    => esc_html__('Add', 'tta-travel-offer'),
 			'remove_button' => esc_html__('Remove', 'tta-travel-offer'),
 			'closed'         => true,
+			'sortable' => true,
 		],
 	]);
 
@@ -434,7 +433,7 @@ function TravelAlbania_register_excursions_field()
 	]);
 
 	$cmb_init->add_group_field($group_id, [
-		'name'       => esc_html__('Select Accommodation', 'tta-travel-offer'),
+		'name'       => esc_html__('Select Excursion', 'tta-travel-offer'),
 		'id'         => 'excursion_select',
 		'type'    => 'multicheck',
 		'options' => fetch_taxonomy('tta_travel_excursions'),
@@ -464,13 +463,19 @@ function TravelAlbania_register_transports_field()
 	]);
 
 	$cmb_init->add_group_field($group_id, [
-		'name'       => esc_html__('Date', 'tta-travel-offer'),
-		'id'         => 'date',
+		'name'       => esc_html__('Start Date', 'tta-travel-offer'),
+		'id'         => 'start_date',
 		'type'       => 'text_date',
 	]);
 
 	$cmb_init->add_group_field($group_id, [
-		'name'       => esc_html__('Select Accommodation', 'tta-travel-offer'),
+		'name'       => esc_html__('End Date', 'tta-travel-offer'),
+		'id'         => 'end_date',
+		'type'       => 'text_date',
+	]);
+
+	$cmb_init->add_group_field($group_id, [
+		'name'       => esc_html__('Select Transport', 'tta-travel-offer'),
 		'id'         => 'transport_select',
 		'type'    => 'multicheck',
 		'options' => fetch_taxonomy('tta_travel_transports'),

@@ -81,13 +81,15 @@ class TravelAlbania_Init_Helper
         <?php
     }
 
-    public function price_calculation()
+    public function price_calculation($postid, $type = null)
     {
         global $wpdb;
 
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
+        $people_count = (float) get_post_meta($postid, 'number_of_people', true);
 
         $session_offer_data = isset($_SESSION['offer_data']) ? $_SESSION['offer_data'] : [];
 
@@ -105,20 +107,61 @@ class TravelAlbania_Init_Helper
             }
         }
 
-        $meta_key = 'is_package_included';
-        $meta_value = 'yes';
-        $term_ids = $wpdb->get_col($wpdb->prepare(
-            "SELECT term_id FROM {$wpdb->termmeta} WHERE meta_key = %s AND meta_value = %s",
-            $meta_key,
-            $meta_value
-        ));
+        $accommodation_price = (float) $this->find_price_with_meta($postid, 'TravelAlbania_accommodations_repeat', 'accommodation_select') / $people_count;
 
-        foreach ($term_ids as $term_id) {
-            $price = (float) get_term_meta($term_id, 'price', true);
-            $included_total_price += $price;
+        $transport_price = (float) $this->find_price_with_meta($postid, 'TravelAlbania_transports_repeat', 'transport_select') / $people_count;
+
+        $price_per_person =
+            $select_total_price
+            +
+            $this->find_price_with_terms($postid)
+            +
+            $accommodation_price
+            +
+            $transport_price
+            +
+            $this->find_price_with_meta($postid, 'TravelAlbania_excursions_repeat', 'excursion_select');
+
+        if ($type == 'final') {
+            return number_format((float)$price_per_person * $people_count, 2, '.', '');
+        } else {
+            return number_format((float)$price_per_person, 2, '.', '');
+        }
+    }
+
+    public function find_price_with_meta($post_id, $meta_name, $array_name)
+    {
+        $price = 0;
+        $post_repeater_meta = get_post_meta($post_id, $meta_name, true);
+        foreach ($post_repeater_meta as $data) {
+            $term_id_get = $data[$array_name];
+            foreach ($term_id_get as $id) {
+                $is_included = get_term_meta($id, 'is_package_included', true);
+                if ($is_included == 'yes') {
+                    $price += (float) get_term_meta($id, 'price', true);
+                }
+            }
+        }
+        return $price;
+    }
+
+    public function find_price_with_terms($post_id)
+    {
+        $price = 0;
+        $terms = wp_get_post_terms($post_id, 'tta_travel_flights', array('fields' => 'ids'));
+
+        if (empty($terms) || is_wp_error($terms)) {
+            return 0;
         }
 
-        return $select_total_price + $included_total_price;
+        foreach ($terms as $id) {
+            $is_included = get_term_meta($id, 'is_package_included', true);
+            if ($is_included == 'yes') {
+                $price += (float) get_term_meta($id, 'price', true);
+            }
+        }
+
+        return $price;
     }
 
     public function render_summary()

@@ -21,45 +21,37 @@ $helper_cls = new TravelAlbania_Init_Helper;
 
         if (!empty($transport_date) && !is_wp_error($transport_date)) :
             foreach ($transport_date as $date) :
-                $date_name = get_gmt_from_date($date['date'], 'd F');
-                $transport_select = $date['transport_select'];
+                $start_date = get_gmt_from_date($date['start_date'], 'd F');
+                $end_date = get_gmt_from_date($date['end_date'], 'd F Y');
+                $transport_select = !empty($date['transport_select']) ? $date['transport_select'] : null;
         ?>
 
                 <div class="max-w-[1300px] mx-auto px-5">
-                    <h4 class="!mb-5 !text-lg"><?php echo wp_kses_post($date_name); ?></h4>
+                    <h4 class="!mb-3 !text-lg"><?php echo wp_kses_post($start_date . ' - ' . $end_date); ?></h4>
 
                     <?php
+                    if (!empty($transport_select)):
+                        $transport_hotel_terms = get_terms(array(
+                            'taxonomy' => 'tta_travel_transports',
+                            'include' => $transport_select,
+                            'hide_empty' => false,
+                        ));
 
-                    $transport_hotel_terms = get_terms(array(
-                        'taxonomy' => 'tta_travel_transports',
-                        'include' => $transport_select,
-                        'hide_empty' => false,
-                    ));
+                        if (!empty($transport_hotel_terms) && !is_wp_error($transport_hotel_terms)) :
 
-                    if (!empty($transport_hotel_terms) && !is_wp_error($transport_hotel_terms)) :
+                            foreach ($transport_hotel_terms as $hotel) :
+                                $hotel_id = $hotel->term_id;
+                                $title = $hotel->name;
+                                $image = get_term_meta($hotel_id, 'image', true);
+                                $price = get_term_meta($hotel_id, 'price', true);
+                                $location = get_term_meta($hotel_id, 'location', true);
+                                $included = get_term_meta($hotel_id, 'included', true);
+                                $excluded = get_term_meta($hotel_id, 'excluded', true);
+                                $is_first_hotel = ($i === 0);
 
-                        $i = 0;
-
-                        foreach ($transport_hotel_terms as $hotel) :
-                            $hotel_id = $hotel->term_id;
-                            $title = $hotel->name;
-                            $image = get_term_meta($hotel_id, 'image', true);
-                            $price = get_term_meta($hotel_id, 'price', true);
-                            $location = get_term_meta($hotel_id, 'location', true);
-                            $included = get_term_meta($hotel_id, 'included', true);
-                            $excluded = get_term_meta($hotel_id, 'excluded', true);
-                            $is_first_hotel = ($i === 0);
-
-                            $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
-                            $is_selected = in_array($hotel_id, $session_transports_id);
-
-                            $i = 1;
-                            $i <= 5;
-                            $i++
+                                $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
+                                $is_selected = in_array($hotel_id, $session_transports_id);
                     ?>
-                            <?php if (!$is_first_hotel) : ?>
-                                <div class="max-w-[1300px] mx-auto px-5">
-                                <?php endif; ?>
 
                                 <div class="mt-5 flex items-center gap-10 rounded-lg ring ring-[#80808012] shadow-md">
                                     <div class="w-3/4 flex items-center border-r-1 border-[#80808057] p-5">
@@ -139,39 +131,40 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                             endif;
                                             ?>
                                         </div>
-                                        <?php
-                                        if ($is_package_included !== 'yes' && $price) :
-                                            echo '<span>+ €' . number_format((float)$price, 2) . '</span>';
-                                        endif;
-                                        ?>
+
+                                        <span>
+                                            <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
+                                            €
+                                            <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Day
+                                        </span>
                                     </div>
 
                                 </div>
-                                </div>
-                                <?php if (!$is_first_hotel) : ?>
-                </div>
-            <?php endif; ?>
-<?php
-                        endforeach;
+
+                    <?php
+                            endforeach;
+                        endif;
                     endif;
+                    ?>
 
-                    echo '<br>';
-                endforeach;
-            else:
-                echo "No Transports Found";
-            endif;
+                </div>
+        <?php
+            endforeach;
+        else:
+            echo "No Transports Found";
+        endif;
 
-?>
+        ?>
 
-<div class="mt-8 w-[1300px] px-5 mx-auto mb-8">
-    <div class="select-none cursor-pointer rounded-sm text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="excursions">
-        <i class="fa fa-arrow-left"></i>
-        <span>Excursions</span>
-    </div>
-    <div class="select-none cursor-pointer rounded-sm text-white inline-block p-[10px_20px] bg-[#e73017] offer_tab_onclick" data-tabid="summary">
-        <span>Summary</span>
-        <i class="fa fa-arrow-right"></i>
-    </div>
-</div>
+        <div class="mt-8 w-[1300px] mx-auto mb-8 px-5">
+            <div class="select-none cursor-pointer rounded-sm text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="excursions">
+                <i class="fa fa-arrow-left"></i>
+                <span>Excursions</span>
+            </div>
+            <div class="select-none cursor-pointer rounded-sm text-white inline-block p-[10px_20px] bg-[#e73017] offer_tab_onclick" data-tabid="summary">
+                <span>Summary</span>
+                <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
     </div>
 </div>

@@ -42,6 +42,9 @@ $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'p
 
 $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
 $logo =  plugin_dir_url(__FILE__) . "../assets/img/black-logo.webp";
+
+
+$people = get_post_meta($post_id, 'number_of_people', true);
 ?>
 
 <style>
@@ -126,9 +129,10 @@ $logo =  plugin_dir_url(__FILE__) . "../assets/img/black-logo.webp";
             <div>
                 <?php
                 $helper_cls = new TravelAlbania_Init_Helper();
-                $total_price = $helper_cls->price_calculation();
+                $price_per_person = $helper_cls->price_calculation($post_id);
+                $price_final = $helper_cls->price_calculation($post_id, 'final');
                 ?>
-                Total price: <b>€</b><span class="offer_total_price font-bold"><?php echo wp_kses_post($total_price); ?></span> P.P.
+                Total price: <b>€</b><span class="offer_total_price font-bold"><?php echo wp_kses_post($price_per_person); ?></span> P.P.
             </div>
         </div>
 

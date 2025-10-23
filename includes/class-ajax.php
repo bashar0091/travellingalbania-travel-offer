@@ -41,7 +41,7 @@ class TravelAlbania_Ajax
         }
 
         $helper_cls = new TravelAlbania_Init_Helper();
-        $total_price = $helper_cls->price_calculation();
+        $total_price = $helper_cls->price_calculation($offer_id);
 
         ob_start();
         $helper_cls->delete_btn($flight_id, $type);
@@ -66,6 +66,7 @@ class TravelAlbania_Ajax
             session_start();
         }
 
+        $offer_id = isset($_POST['offer_id']) ? intval($_POST['offer_id']) : 0;
         $flight_id = isset($_POST['flight_id']) ? intval($_POST['flight_id']) : 0;
         $type      = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : '';
 
@@ -79,7 +80,7 @@ class TravelAlbania_Ajax
         }
 
         $helper_cls = new TravelAlbania_Init_Helper();
-        $total_price = $helper_cls->price_calculation();
+        $total_price = $helper_cls->price_calculation($offer_id);
 
         ob_start();
         $helper_cls->select_btn($flight_id, $type);

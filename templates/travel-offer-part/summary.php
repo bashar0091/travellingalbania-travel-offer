@@ -19,8 +19,6 @@
 <?php
 $departure = get_post_meta(get_the_ID(), 'departure', true);
 $return = get_post_meta(get_the_ID(), 'return', true);
-$people = get_post_meta(get_the_ID(), 'number_of_people', true);
-$package_cost = get_post_meta(get_the_ID(), 'package_cost', true);
 
 if ($departure && $return) {
     $dep_date = new DateTime($departure);
@@ -59,11 +57,11 @@ if ($departure && $return) {
                 </tr>
                 <tr>
                     <th>Price per person:</th>
-                    <td>€<?php echo esc_html($package_cost) ?></td>
+                    <td>€<?php echo wp_kses_post($price_per_person); ?></td>
                 </tr>
                 <tr>
                     <th>Total cost:</th>
-                    <td>€6,070.00</td>
+                    <td>€<?php echo wp_kses_post($price_final); ?></td>
                 </tr>
             </table>
         </div>

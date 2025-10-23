@@ -25,93 +25,99 @@ $post_thumbnail = plugin_dir_url(dirname(__FILE__, 2)) . 'assets/img/thumbnail.j
             <h2 class="!text-xl !mb-10">Please indicate your flight preference</h2>
         </div>
 
-        <?php
-        if (!empty($flight_terms) && !is_wp_error($flight_terms)) :
-            foreach ($flight_terms as $term) :
-                $id = $term->term_id;
-                $name = $term->name;
-                $flight_info = get_term_meta($id, 'TravelAlbania_flight_repeat', true);
-                $price = get_term_meta($id, 'price', true);
+        <div class="px-5 w-[1300px] mx-auto">
+            <?php
+            if (!empty($flight_terms) && !is_wp_error($flight_terms)) :
+                foreach ($flight_terms as $term) :
+                    $id = $term->term_id;
+                    $name = $term->name;
+                    $flight_info = get_term_meta($id, 'TravelAlbania_flight_repeat', true);
+                    $price = get_term_meta($id, 'price', true);
 
-                $is_package_included = get_term_meta($id, 'is_package_included', true);
-                $is_selected = in_array($id, $session_flights_id);
-        ?>
-                <div class="fly-table flex items-center rounded-lg ring ring-[#80808012] shadow-md justify-center gap-5 mb-10 w-[1300px] mx-auto">
-                    <div class="border-r-1 border-[#80808057] pr-10">
-                        <h2 class="!mb-5 pt-10 !text-lg"><?php echo wp_kses_post($name); ?></h2>
+                    $is_package_included = get_term_meta($id, 'is_package_included', true);
+                    $is_selected = in_array($id, $session_flights_id);
+            ?>
+                    <div class="fly-table flex items-center rounded-lg ring ring-[#80808012] shadow-md justify-center gap-5 mb-10">
+                        <div class="border-r-1 border-[#80808057] pr-10">
+                            <h2 class="!mb-5 pt-10 !text-lg"><?php echo wp_kses_post($name); ?></h2>
 
-                        <table class="!border-none pb-50">
-                            <tr>
-                                <th class="!border-none !bg-transparent text-left"></th>
-                                <th class="!border-none !bg-transparent text-left">DATE</th>
-                                <th class="!border-none !bg-transparent text-left">FROM - TO</th>
-                                <th class="!border-none !bg-transparent text-left">FLIGHT NUMBER</th>
-                                <th class="!border-none !bg-transparent text-left">CLASS</th>
-                            </tr>
-                            <?php
-                            if (!empty($flight_info)):
-                                $total_rows = count($flight_info);
-                                foreach ($flight_info as $index => $info):
-                                    $date = $info['date'];
-                                    $start_time = $info['start_time'];
-                                    $end_time = $info['end_time'];
-                                    $from = $info['from'];
-                                    $to = $info['to'];
-                                    $flight_number = $info['flight_number'];
-                                    $flight_class = $info['flight_class'];
-                                    $flight_logo = !empty($info['flight_logo']) ? $info['flight_logo'] : '';
-                                    $flight_name = $info['flight_name'];
-                                    // Check if this is the last row
-                                    $tr_class = ($index !== $total_rows - 1) ? 'lagaborder' : 'lagasna';
+                            <table class="!border-none pb-50">
+                                <tr>
+                                    <th class="!border-none !bg-transparent text-left"></th>
+                                    <th class="!border-none !bg-transparent text-left">DATE</th>
+                                    <th class="!border-none !bg-transparent text-left">FROM - TO</th>
+                                    <th class="!border-none !bg-transparent text-left">FLIGHT NUMBER</th>
+                                    <th class="!border-none !bg-transparent text-left">CLASS</th>
+                                </tr>
+                                <?php
+                                if (!empty($flight_info)):
+                                    $total_rows = count($flight_info);
+                                    foreach ($flight_info as $index => $info):
+                                        $date = $info['date'];
+                                        $start_time = $info['start_time'];
+                                        $end_time = $info['end_time'];
+                                        $from = $info['from'];
+                                        $to = $info['to'];
+                                        $flight_number = $info['flight_number'];
+                                        $flight_class = $info['flight_class'];
+                                        $flight_logo = !empty($info['flight_logo']) ? $info['flight_logo'] : '';
+                                        $flight_name = $info['flight_name'];
+                                        // Check if this is the last row
+                                        $tr_class = ($index !== $total_rows - 1) ? 'lagaborder' : 'lagasna';
 
-                            ?>
-                                    <tr class="<?php echo $tr_class; ?>">
-                                        <td>
-                                            <?php if (!empty($flight_logo)): ?>
-                                                <div>
-                                                    <img class="w-[40px] mx-auto" src="<?php echo esc_url($flight_logo); ?>">
-                                                </div>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <?php echo wp_kses_post($date . ' . ' . $start_time . ' - ' . $end_time); ?>
-                                        </td>
-                                        <td><?php echo wp_kses_post($from . ' - ' . $to); ?></td>
-                                        <td><?php echo wp_kses_post($flight_number); ?></td>
-                                        <td><?php echo wp_kses_post($flight_class); ?></td>
-                                    </tr>
-                            <?php
-                                endforeach;
-                            endif; ?>
-                        </table>
+                                ?>
+                                        <tr class="<?php echo $tr_class; ?>">
+                                            <td>
+                                                <?php if (!empty($flight_logo)): ?>
+                                                    <div>
+                                                        <img class="w-[40px] mx-auto" src="<?php echo esc_url($flight_logo); ?>">
+                                                    </div>
+                                                    <div class="font-bold text-[12px]">
+                                                        <?php echo wp_kses_post($flight_name); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php echo wp_kses_post($date . ' . ' . $start_time . ' - ' . $end_time); ?>
+                                            </td>
+                                            <td><?php echo wp_kses_post($from . ' - ' . $to); ?></td>
+                                            <td><?php echo wp_kses_post($flight_number); ?></td>
+                                            <td><?php echo wp_kses_post($flight_class); ?></td>
+                                        </tr>
+                                <?php
+                                    endforeach;
+                                endif; ?>
+                            </table>
 
-                    </div>
-                    <div class="flex flex-col gap-2 items-center w-1/4 justify-center">
-                        <div class="render_flight_btn">
-                            <?php
-                            if ($is_package_included === 'yes'):
-                                echo '<span class="text-green-800">Package Included</span>';
-                            elseif ($is_selected):
-                                $helper_cls->delete_btn($id, 'flights_id');
-                            else:
-                                $helper_cls->select_btn($id, 'flights_id');
-                            endif; ?>
                         </div>
-                        <?php
-                        if ($is_package_included !== 'yes' && $price) :
-                            echo '<span>+ €' . number_format((float)$price, 2) . '</span>';
-                        endif;
-                        ?>
-                    </div>
-                </div>
-        <?php
-            endforeach;
-        else:
-            echo "No Flight Found";
-        endif;
-        ?>
+                        <div class="flex flex-col gap-2 items-center w-1/4 justify-center">
+                            <div class="render_flight_btn">
+                                <?php
+                                if ($is_package_included === 'yes'):
+                                    echo '<span class="text-green-800">Package Included</span>';
+                                elseif ($is_selected):
+                                    $helper_cls->delete_btn($id, 'flights_id');
+                                else:
+                                    $helper_cls->select_btn($id, 'flights_id');
+                                endif; ?>
+                            </div>
 
-        <div class="mt-8 w-[1300px] mx-auto">
+                            <span>
+                                <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
+                                €
+                                <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Person
+                            </span>
+                        </div>
+                    </div>
+            <?php
+                endforeach;
+            else:
+                echo "No Flight Found";
+            endif;
+            ?>
+        </div>
+
+        <div class="px-5 mt-8 w-[1300px] mx-auto">
             <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="program">
                 <i class="fa fa-arrow-left"></i>
                 <span>Program</span>

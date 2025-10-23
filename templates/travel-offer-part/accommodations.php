@@ -24,46 +24,41 @@ $helper_cls = new TravelAlbania_Init_Helper;
             foreach ($accommodation_date as $date) :
                 $start_date = get_gmt_from_date($date['start_date'], 'd F');
                 $end_date = get_gmt_from_date($date['end_date'], 'd F Y');
-                $accommodation_select = $date['accommodation_select'];
+                $accommodation_select = !empty($date['accommodation_select']) ? $date['accommodation_select'] : null;
         ?>
-                <div class="max-w-[1300px] mx-auto">
+                <div class="max-w-[1300px] mx-auto px-5 mb-10">
 
-                    <h4 class="!mb-5 px-5 !text-lg"><?php echo wp_kses_post($start_date . ' - ' . $end_date); ?></h4>
+                    <h4 class="!mb-3 !text-lg"><?php echo wp_kses_post($start_date . ' - ' . $end_date); ?></h4>
 
                     <?php
+                    if (!empty($accommodation_select)):
 
-                    $accommodation_hotel_terms = get_terms(array(
-                        'taxonomy' => 'tta_travel_accommodations',
-                        'include' => $accommodation_select,
-                        'hide_empty' => false,
-                    ));
+                        $accommodation_hotel_terms = get_terms(array(
+                            'taxonomy' => 'tta_travel_accommodations',
+                            'include' => $accommodation_select,
+                            'hide_empty' => false,
+                        ));
 
-                    if (!empty($accommodation_hotel_terms) && !is_wp_error($accommodation_hotel_terms)) :
+                        if (!empty($accommodation_hotel_terms) && !is_wp_error($accommodation_hotel_terms)) :
 
-                        $i = 0;
+                            foreach ($accommodation_hotel_terms as $hotel) :
+                                $hotel_id = $hotel->term_id;
+                                $title = $hotel->name;
+                                $image = get_term_meta($hotel_id, 'image', true);
+                                $price = get_term_meta($hotel_id, 'price', true);
+                                $location = get_term_meta($hotel_id, 'location', true);
+                                $rating = get_term_meta($hotel_id, 'rating', true);
+                                $room_type = get_term_meta($hotel_id, 'room_type', true);
+                                $basic = get_term_meta($hotel_id, 'basic', true);
 
-                        foreach ($accommodation_hotel_terms as $hotel) :
-                            $hotel_id = $hotel->term_id;
-                            $title = $hotel->name;
-                            $image = get_term_meta($hotel_id, 'image', true);
-                            $price = get_term_meta($hotel_id, 'price', true);
-                            $location = get_term_meta($hotel_id, 'location', true);
-                            $rating = get_term_meta($hotel_id, 'rating', true);
-                            $room_type = get_term_meta($hotel_id, 'room_type', true);
-                            $basic = get_term_meta($hotel_id, 'basic', true);
+                                for ($i = 1; $i <= 5; $i++);
 
-                            for ($i = 1; $i <= 5; $i++);
+                                $is_first_hotel = $i === 0 ? true : false;
 
-                            $is_first_hotel = $i === 0 ? true : false;
-
-                            $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
-                            $is_selected = in_array($hotel_id, $session_accommodations_id);
+                                $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
+                                $is_selected = in_array($hotel_id, $session_accommodations_id);
                     ?>
-                            <?php if (!$is_first_hotel) : ?>
-                                <div class="max-w-[1300px] mx-auto px-5">
-                                <?php endif; ?>
-
-                                <div class="mt-5 flex items-center gap-10 rounded-lg ring ring-[#80808012] shadow-md">
+                                <div class="mb-5 flex items-center gap-10 rounded-lg ring ring-[#80808012] shadow-md">
                                     <div class="w-3/4 flex items-center border-r-1 border-[#80808057] pr-10">
                                         <div class="flex items-center px-5">
                                             <div class="flex-shrink-0 mr-4">
@@ -102,11 +97,7 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                                                 } elseif ($i == $whole + 1 && $fraction > 0) {
                                                                     // Partial red star (fraction × 100)
                                                                     $percentage = round($fraction * 100, 2);
-                                                                    $html .= '<i class="fa fa-star !text-sm" style="
-                    background: linear-gradient(to right, #e73017 ' . $percentage . '%, gray ' . $percentage . '%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                "></i>';
+                                                                    $html .= '<i class="fa fa-star !text-sm" style="background: linear-gradient(to right, #e73017 ' . $percentage . '%, gray ' . $percentage . '%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;"></i>';
                                                                 } else {
                                                                     // Gray stars
                                                                     $html .= '<i class="fa fa-star !text-sm text-gray-400"></i>';
@@ -128,7 +119,7 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                             <table class="w-full">
                                                 <thead>
                                                     <tr>
-                                                        <th class="text-left font-bold pb-2 pr-4 text-gray-700 !border-none !bg-transparent">Room Type</th>
+                                                        <th class="text-left font-bold pb-2 pr-4 text-gray-700 !border-none !bg-transparent w-[300px]">Room Type</th>
                                                         <th class="text-left font-bold pb-2 text-gray-700 !border-none !bg-transparent">Basic</th>
                                                     </tr>
                                                 </thead>
@@ -157,42 +148,39 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                                 $helper_cls->select_btn($hotel_id, 'accommodations_id');
                                             endif; ?>
                                         </div>
-                                        <?php
-                                        if ($is_package_included !== 'yes' && $price) :
-                                            echo '<span>+ €' . number_format((float)$price, 2) . '</span>';
-                                        endif;
-                                        ?>
+
+                                        <span>
+                                            <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
+                                            €
+                                            <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Room
+                                        </span>
                                     </div>
-
                                 </div>
-                                </div>
-
-                                <?php if (!$is_first_hotel) : ?>
-                </div>
-            <?php endif; ?>
-<?php
-                        endforeach;
+                    <?php
+                            endforeach;
+                        endif;
                     endif;
+                    ?>
+                </div>
+        <?php
+            endforeach;
+        else:
+            echo "No Accommodations Found";
+        endif;
 
-                    echo '<br>';
-                endforeach;
-            else:
-                echo "No Accommodations Found";
-            endif;
-
-?>
+        ?>
 
 
 
-<div class="mt-8 w-[1300px] px-5 mx-auto mb-8">
-    <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="flights">
-        <i class="fa fa-arrow-left"></i>
-        <span>Flights</span>
-    </div>
-    <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#e73017] offer_tab_onclick" data-tabid="excursions">
-        <span>Excursions</span>
-        <i class="fa fa-arrow-right"></i>
-    </div>
-</div>
+        <div class="mt-8 w-[1300px] px-5 mx-auto mb-8">
+            <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#000] offer_tab_onclick" data-tabid="flights">
+                <i class="fa fa-arrow-left"></i>
+                <span>Flights</span>
+            </div>
+            <div class="select-none rounded-sm cursor-pointer text-white inline-block p-[10px_20px] bg-[#e73017] offer_tab_onclick" data-tabid="excursions">
+                <span>Excursions</span>
+                <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
     </div>
 </div>
