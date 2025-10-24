@@ -5,7 +5,29 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+$post_id = get_the_ID();
+$helper_cls = new TravelAlbania_Init_Helper();
+
+if (!isset($_SESSION['offer_data'])) {
+    $_SESSION['offer_data'] = [
+        'offer_id'   => $post_id,
+        'flights_id' => [],
+        'accommodations_id' => $helper_cls->find_termid_with_meta($post_id, 'TravelAlbania_accommodations_repeat', 'accommodation_select'),
+        'excursions_id' => [],
+        'transports_id' => $helper_cls->find_termid_with_meta($post_id, 'TravelAlbania_transports_repeat', 'transport_select'),
+    ];
+}
+
+// session_destroy();
+// if (isset($_SESSION['offer_data'])) {
+//     echo '<pre>';
+//     print_r($_SESSION['offer_data']);
+//     echo '</pre>';
+// }
+
+
 $session_offer_data = array();
+
 if (isset($_SESSION['offer_data'])) {
     $session_offer_data = $_SESSION['offer_data'];
 }
@@ -26,8 +48,6 @@ $session_transports_id = isset($session_offer_data['transports_id']) && is_array
     ? $session_offer_data['transports_id']
     : [];
 
-$post_id = get_the_ID();
-
 $menu_items = [
     'Program' => 'fa fa-briefcase',
     'Flights' => 'fa fa-plane',
@@ -41,8 +61,8 @@ $menu_items = [
 $active_tab = isset($_GET['active']) ? sanitize_text_field($_GET['active']) : 'program';
 
 $offer_product_id = get_post_meta($post_id, 'connect_woocommerce', true);
-$logo =  plugin_dir_url(__FILE__) . "../assets/img/black-logo.webp";
 
+$logo =  plugin_dir_url(__FILE__) . "../assets/img/black-logo.webp";
 
 $people = get_post_meta($post_id, 'number_of_people', true);
 ?>
@@ -128,11 +148,10 @@ $people = get_post_meta($post_id, 'number_of_people', true);
 
             <div>
                 <?php
-                $helper_cls = new TravelAlbania_Init_Helper();
                 $price_per_person = $helper_cls->price_calculation($post_id);
                 $price_final = $helper_cls->price_calculation($post_id, 'final');
                 ?>
-                Total price: <b>€</b><span class="offer_total_price font-bold"><?php echo wp_kses_post($price_per_person); ?></span> P.P.
+                Total price: <b>€</b><span class="offer_price_per_person font-bold"><?php echo wp_kses_post($price_per_person); ?></span> P.P.
             </div>
         </div>
 

@@ -308,8 +308,12 @@ function TravelAlbania_register_offer_metabox()
 	$cmb_init->add_field(array(
 		'name'    => esc_html__('Number of people', 'tta-travel-offer'),
 		'id'      => 'number_of_people',
-		'type'    => 'text',
-		'default' => '',
+		'type'       => 'text_small',
+		'attributes' => array(
+			'type'  => 'number',
+			'min'   => 0,
+			'max'   => 100,
+		),
 	));
 }
 function TravelAlbania_get_woocommerce_products()

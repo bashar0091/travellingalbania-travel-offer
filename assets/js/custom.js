@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
-  var offer_total_price = $(".offer_total_price");
+  var offer_price_per_person = $(".offer_price_per_person");
+  var offer_final_price = $(".offer_final_price");
   var render_summary_data = $(".render_summary_data");
-  var render_flight_btn = $(".render_flight_btn");
 
   // flight_on_select
   $(document).on("click", ".flight_on_select", function (e) {
@@ -21,7 +21,8 @@ jQuery(document).ready(function ($) {
         type: type,
       },
       success: function (response) {
-        offer_total_price.text(response.data.total_price);
+        offer_price_per_person.text(response.data.price_per_person);
+        offer_final_price.text(response.data.final_price);
         render_summary_data.html(response.data.summary_content);
         t.parent().html(response.data.delete_btn);
       },
@@ -49,7 +50,8 @@ jQuery(document).ready(function ($) {
         type: type,
       },
       success: function (response) {
-        offer_total_price.text(response.data.total_price);
+        offer_price_per_person.text(response.data.price_per_person);
+        offer_final_price.text(response.data.final_price);
         render_summary_data.html(response.data.summary_content);
         t.parent().html(response.data.select_btn);
       },

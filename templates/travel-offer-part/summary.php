@@ -57,11 +57,11 @@ if ($departure && $return) {
                 </tr>
                 <tr>
                     <th>Price per person:</th>
-                    <td>€<?php echo wp_kses_post($price_per_person); ?></td>
+                    <td>€<span class="offer_price_per_person"><?php echo wp_kses_post($price_per_person); ?></span></td>
                 </tr>
                 <tr>
                     <th>Total cost:</th>
-                    <td>€<?php echo wp_kses_post($price_final); ?></td>
+                    <td>€<span class="offer_final_price"><?php echo wp_kses_post($price_final); ?></span></td>
                 </tr>
             </table>
         </div>

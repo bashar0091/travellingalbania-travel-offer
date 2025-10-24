@@ -13,15 +13,16 @@ class TravelAlbania_Init_Helper
     public function __construct()
     {
         add_filter('template_include', [$this, 'travel_offer_single_template']);
-        add_action('template_redirect', [$this, 'travel_offer_booking_submti']);
+        add_action('template_redirect', [$this, 'travel_offer_booking_submit']);
         add_action('woocommerce_before_calculate_totals', [$this, 'set_price_for_offer_product'], 10, 1);
     }
 
-    public function travel_offer_booking_submti()
+    public function travel_offer_booking_submit()
     {
         if (isset($_POST['offer_booking_submit'])) {
+            $offer_id = isset($_POST['offer_id']) ? intval($_POST['offer_id']) : 0;
             $offer_product_id = isset($_POST['offer_product_id']) ? intval($_POST['offer_product_id']) : 0;
-            $total_offer_price = $this->price_calculation();
+            $total_offer_price = $this->price_calculation($offer_id, 'final');
 
             if (class_exists('WC_Cart') && $offer_product_id > 0 && $total_offer_price > 0) {
                 if (!WC()->cart) {
@@ -64,11 +65,11 @@ class TravelAlbania_Init_Helper
         return $template;
     }
 
-    public function delete_btn($id, $type)
+    public function delete_btn($id, $type, $label = 'Choosen')
     {
 ?>
         <div class="flight_on_delete flex items-center gap-5 border border-green-800 px-[30px] py-[10px] rounded-sm cursor-pointer hover:!bg-[#e73017] transition duration-200" data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">
-            <p class="text-green-800 !mb-0 transition duration-200">Choosen</p>
+            <p class="text-green-800 !mb-0 transition duration-200"><?php echo wp_kses_post($label); ?></p>
             <i class="fa fa-trash text-[#e73017] cursor-pointer !p-0 !border-none transition duration-200"></i>
         </div>
     <?php
@@ -81,38 +82,38 @@ class TravelAlbania_Init_Helper
         <?php
     }
 
-    public function price_calculation($postid, $type = null)
+    public function pick_price_from_session($key)
     {
-        global $wpdb;
-
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        $people_count = (float) get_post_meta($postid, 'number_of_people', true);
-
         $session_offer_data = isset($_SESSION['offer_data']) ? $_SESSION['offer_data'] : [];
 
         $select_total_price = 0;
-        $included_total_price = 0;
 
-        $price_keys = ['flights_id', 'accommodations_id', 'excursions_id', 'transports_id'];
-
-        foreach ($price_keys as $key) {
-            if (!empty($session_offer_data[$key]) && is_array($session_offer_data[$key])) {
-                foreach ($session_offer_data[$key] as $term_id) {
-                    $price = (float) get_term_meta($term_id, 'price', true);
-                    $select_total_price += $price;
-                }
+        if (!empty($session_offer_data[$key]) && is_array($session_offer_data[$key])) {
+            foreach ($session_offer_data[$key] as $term_id) {
+                $price = (float) get_term_meta($term_id, 'price', true);
+                $select_total_price += $price;
             }
         }
 
-        $accommodation_price = (float) $this->find_price_with_meta($postid, 'TravelAlbania_accommodations_repeat', 'accommodation_select') / $people_count;
+        return $select_total_price;
+    }
 
-        $transport_price = (float) $this->find_price_with_meta($postid, 'TravelAlbania_transports_repeat', 'transport_select') / $people_count;
+    public function price_calculation($postid, $type = null)
+    {
+        $people_count = (float) get_post_meta($postid, 'number_of_people', true);
+
+        $accommodation_price = $this->pick_price_from_session('accommodations_id') / $people_count;
+
+        $transport_price = $this->pick_price_from_session('transports_id') / $people_count;
 
         $price_per_person =
-            $select_total_price
+            $this->pick_price_from_session('excursions_id')
+            +
+            $this->pick_price_from_session('flights_id')
             +
             $this->find_price_with_terms($postid)
             +
@@ -127,6 +128,22 @@ class TravelAlbania_Init_Helper
         } else {
             return number_format((float)$price_per_person, 2, '.', '');
         }
+    }
+
+    public function find_termid_with_meta($post_id, $meta_name, $array_name)
+    {
+        $term_ids = array();
+        $post_repeater_meta = get_post_meta($post_id, $meta_name, true);
+        foreach ($post_repeater_meta as $data) {
+            $term_id_get = $data[$array_name];
+            foreach ($term_id_get as $id) {
+                $is_included = get_term_meta($id, 'is_package_included', true);
+                if ($is_included == 'yes') {
+                    $term_ids[] = $id;
+                }
+            }
+        }
+        return $term_ids;
     }
 
     public function find_price_with_meta($post_id, $meta_name, $array_name)

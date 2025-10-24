@@ -122,9 +122,7 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                     <div class="flex items-center flex-col gap-2  w-1/4 justify-center ">
                                         <div class="render_flight_btn">
                                             <?php
-                                            if ($is_package_included === 'yes') :
-                                                echo '<span class="text-green-800">Package Included</span>';
-                                            elseif ($is_selected) :
+                                            if ($is_selected) :
                                                 $helper_cls->delete_btn($hotel_id, 'transports_id');
                                             else :
                                                 $helper_cls->select_btn($hotel_id, 'transports_id');

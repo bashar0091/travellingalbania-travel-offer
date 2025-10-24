@@ -26,22 +26,13 @@ class TravelAlbania_Ajax
         $offer_id = isset($_POST['offer_id']) ? intval($_POST['offer_id']) : 0;
         $type      = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : '';
 
-        if (!isset($_SESSION['offer_data'])) {
-            $_SESSION['offer_data'] = [
-                'offer_id'   => $offer_id,
-                'flights_id' => [],
-                'accommodations_id' => [],
-                'excursions_id' => [],
-                'transports_id' => [],
-            ];
-        }
-
         if ($flight_id && !in_array($flight_id, $_SESSION['offer_data'][$type])) {
             $_SESSION['offer_data'][$type][] = $flight_id;
         }
 
         $helper_cls = new TravelAlbania_Init_Helper();
-        $total_price = $helper_cls->price_calculation($offer_id);
+        $price_per_person = $helper_cls->price_calculation($offer_id);
+        $final_price = $helper_cls->price_calculation($offer_id, 'final');
 
         ob_start();
         $helper_cls->delete_btn($flight_id, $type);
@@ -52,7 +43,8 @@ class TravelAlbania_Ajax
         $summary_content = ob_get_clean();
 
         wp_send_json_success([
-            'total_price' => $total_price,
+            'final_price' => $final_price,
+            'price_per_person' => $price_per_person,
             'delete_btn' => $delete_btn,
             'summary_content' => $summary_content,
         ]);
@@ -80,7 +72,8 @@ class TravelAlbania_Ajax
         }
 
         $helper_cls = new TravelAlbania_Init_Helper();
-        $total_price = $helper_cls->price_calculation($offer_id);
+        $price_per_person = $helper_cls->price_calculation($offer_id);
+        $final_price = $helper_cls->price_calculation($offer_id, 'final');
 
         ob_start();
         $helper_cls->select_btn($flight_id, $type);
@@ -91,7 +84,8 @@ class TravelAlbania_Ajax
         $summary_content = ob_get_clean();
 
         wp_send_json_success([
-            'total_price' => $total_price,
+            'final_price' => $final_price,
+            'price_per_person' => $price_per_person,
             'select_btn' => $select_btn,
             'summary_content' => $summary_content,
         ]);
@@ -99,14 +93,3 @@ class TravelAlbania_Ajax
         wp_die();
     }
 }
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-    // session_destroy();
-}
-
-// if (isset($_SESSION['offer_data'])) {
-//     echo '<pre>';
-//     print_r($_SESSION['offer_data']);
-//     echo '</pre>';
-// }
