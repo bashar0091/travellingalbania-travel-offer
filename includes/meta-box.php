@@ -57,23 +57,23 @@ function TravelAlbania_register_flight_metabox()
 		'type'       => 'text',
 	]);
 
-	$cmb_init->add_group_field($group_id, [
-		'name'       => esc_html__('Date', 'tta-travel-offer'),
-		'id'         => 'date',
-		'type'       => 'text_date',
-	]);
+	// $cmb_init->add_group_field($group_id, [
+	// 	'name'       => esc_html__('Date', 'tta-travel-offer'),
+	// 	'id'         => 'date',
+	// 	'type'       => 'text_date',
+	// ]);
 
-	$cmb_init->add_group_field($group_id, [
-		'name'       => esc_html__('Start Time', 'tta-travel-offer'),
-		'id'         => 'start_time',
-		'type'       => 'text_time',
-	]);
+	// $cmb_init->add_group_field($group_id, [
+	// 	'name'       => esc_html__('Start Time', 'tta-travel-offer'),
+	// 	'id'         => 'start_time',
+	// 	'type'       => 'text_time',
+	// ]);
 
-	$cmb_init->add_group_field($group_id, [
-		'name'       => esc_html__('End Time', 'tta-travel-offer'),
-		'id'         => 'end_time',
-		'type'       => 'text_time',
-	]);
+	// $cmb_init->add_group_field($group_id, [
+	// 	'name'       => esc_html__('End Time', 'tta-travel-offer'),
+	// 	'id'         => 'end_time',
+	// 	'type'       => 'text_time',
+	// ]);
 
 	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('From', 'tta-travel-offer'),
@@ -167,6 +167,25 @@ function TravelAlbania_register_accommodation_metabox()
 	));
 }
 
+
+//===========================
+add_action('cmb2_admin_init', 'TravelAlbania_register_extra_metabox');
+function TravelAlbania_register_extra_metabox()
+{
+	$cmb_init = new_cmb2_box(array(
+		'id'            => 'TravelAlbania_extra_info',
+		'title'         => esc_html__('Information', 'tta-travel-offer'),
+		'object_types'  => array('term'),
+		'taxonomies'       => array('tta_travel_extras'),
+	));
+
+	$cmb_init->add_field(array(
+		'name'       => esc_html__('Price', 'tta-travel-offer'),
+		'id'         => 'price',
+		'type'       => 'text_money',
+		'desc' => '/ Room',
+	));
+}
 
 //===========================
 add_action('cmb2_admin_init', 'TravelAlbania_register_excursion_metabox');

@@ -130,11 +130,14 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                             ?>
                                         </div>
 
-                                        <span>
-                                            <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
-                                            €
-                                            <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Day
-                                        </span>
+                                        <?php if ($is_package_included != 'yes'): ?>
+                                            <span>
+                                                <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
+                                                €
+                                                <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Day
+                                            </span>
+                                        <?php endif; ?>
+
                                     </div>
 
                                 </div>

@@ -173,5 +173,34 @@ class TravelAlbania_Admin_Helper
             'public'            => false,
         ];
         register_taxonomy('tta_travel_transports', ['tta_travel_offer'], $args);
+
+
+        //=====================
+        $labels = [
+            'name'              => _x('Extras', 'tta-travel-offer'),
+            'singular_name'     => _x('Extra', 'tta-travel-offer'),
+            'search_items'      => __('Search Extras', 'tta-travel-offer'),
+            'all_items'         => __('All Extras', 'tta-travel-offer'),
+            'parent_item'       => __('Parent Extra', 'tta-travel-offer'),
+            'parent_item_colon' => __('Parent Extra:', 'tta-travel-offer'),
+            'edit_item'         => __('Edit Extra', 'tta-travel-offer'),
+            'update_item'       => __('Update Extra', 'tta-travel-offer'),
+            'add_new_item'      => __('Add New Extra', 'tta-travel-offer'),
+            'new_item_name'     => __('New Extra Name', 'tta-travel-offer'),
+            'menu_name'         => __('Extras', 'tta-travel-offer'),
+        ];
+        $args = [
+            'hierarchical'      => true,
+            'labels'            => $labels,
+            'show_ui'           => true,
+            'show_admin_column' => false,
+            'meta_box_cb'       => false,
+            'show_in_quick_edit' => false,
+            'query_var'         => true,
+            // 'rewrite'           => ['slug' => 'travel-extras'],
+            'rewrite'           => false,
+            'public'            => false,
+        ];
+        register_taxonomy('tta_travel_extras', ['tta_travel_offer'], $args);
     }
 }

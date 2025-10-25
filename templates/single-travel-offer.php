@@ -54,6 +54,7 @@ $menu_items = [
     'Accommodations' => 'fa fa-building',
     'Excursions' => 'fa fa-compass',
     'Transport' => 'fa fa-car',
+    'Extras' => 'fa fa-car',
     'Summary' => 'fa fa-file-text',
     'Book' => 'fa fa-calendar'
 ];
@@ -126,7 +127,7 @@ $people = get_post_meta($post_id, 'number_of_people', true);
             <div>
                 <img class="logo w-[150px] px-5" src="<?php echo esc_url($logo) ?>" alt="logo">
             </div>
-            <div class="inline-flex h-full overflow-hidden gap-10 w-[1300px] mx-auto">
+            <div class="inline-flex h-full overflow-hidden gap-4 w-[1300px] mx-auto">
                 <?php
                 foreach ($menu_items as  $key => $item) :
 
@@ -137,7 +138,7 @@ $people = get_post_meta($post_id, 'number_of_people', true);
 
                 ?>
                     <span
-                        class="select-none cursor-pointer inline-block p-[15px_25px] transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($key)); ?>">
+                        class="select-none cursor-pointer inline-flex items-center gap-2 p-[15px_25px] transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($key)); ?>">
                         <i class="<?php echo esc_attr($item); ?>"></i>
                         <?php echo esc_html($key); ?>
                     </span>
@@ -163,6 +164,7 @@ $people = get_post_meta($post_id, 'number_of_people', true);
             'accommodations',
             'excursions',
             'transport',
+            'extras',
             'summary',
             'book'
         ];

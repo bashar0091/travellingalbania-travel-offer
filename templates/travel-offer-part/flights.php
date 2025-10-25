@@ -38,13 +38,13 @@ $post_thumbnail = plugin_dir_url(dirname(__FILE__, 2)) . 'assets/img/thumbnail.j
                     $is_selected = in_array($id, $session_flights_id);
             ?>
                     <div class="fly-table flex items-center rounded-lg ring ring-[#80808012] shadow-md justify-center gap-5 mb-10">
-                        <div class="border-r-1 border-[#80808057] pr-10">
+                        <div class="border-r-1 border-[#80808057] pr-10 w-[65%]">
                             <h2 class="!mb-5 pt-10 !text-lg"><?php echo wp_kses_post($name); ?></h2>
 
                             <table class="!border-none pb-50">
                                 <tr>
                                     <th class="!border-none !bg-transparent text-left"></th>
-                                    <th class="!border-none !bg-transparent text-left">DATE</th>
+                                    <!-- <th class="!border-none !bg-transparent text-left">DATE</th> -->
                                     <th class="!border-none !bg-transparent text-left">FROM - TO</th>
                                     <th class="!border-none !bg-transparent text-left">FLIGHT NUMBER</th>
                                     <th class="!border-none !bg-transparent text-left">CLASS</th>
@@ -72,14 +72,18 @@ $post_thumbnail = plugin_dir_url(dirname(__FILE__, 2)) . 'assets/img/thumbnail.j
                                                     <div>
                                                         <img class="w-[40px] mx-auto" src="<?php echo esc_url($flight_logo); ?>">
                                                     </div>
-                                                    <div class="font-bold text-[12px]">
+                                                    <div class="font-bold text-[12px] text-center">
                                                         <?php echo wp_kses_post($flight_name); ?>
                                                     </div>
                                                 <?php endif; ?>
                                             </td>
-                                            <td>
-                                                <?php echo wp_kses_post($date . ' . ' . $start_time . ' - ' . $end_time); ?>
-                                            </td>
+
+                                            <?php if (false): ?>
+                                                <td>
+                                                    <?php echo wp_kses_post($date . ' . ' . $start_time . ' - ' . $end_time); ?>
+                                                </td>
+                                            <?php endif; ?>
+
                                             <td><?php echo wp_kses_post($from . ' - ' . $to); ?></td>
                                             <td><?php echo wp_kses_post($flight_number); ?></td>
                                             <td><?php echo wp_kses_post($flight_class); ?></td>
