@@ -24,7 +24,17 @@ jQuery(document).ready(function ($) {
         offer_price_per_person.text(response.data.price_per_person);
         offer_final_price.text(response.data.final_price);
         render_summary_data.html(response.data.summary_content);
-        t.parent().html(response.data.delete_btn);
+
+        if (type == 'flights_id') {
+          $('.render_flight_content').html(response.data.render_flight_content);
+        } else if (type == 'accommodations_id') {
+          $('.render_accommodation_content').html(response.data.render_flight_content);
+        } else if (type == 'transports_id') {
+          $('.render_transport_content').html(response.data.render_flight_content);
+        } else {
+          t.parent().html(response.data.delete_btn);
+        }
+
       },
       error: function (xhr, status, error) {
         console.error("AJAX Error:", error);

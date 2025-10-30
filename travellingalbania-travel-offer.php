@@ -30,6 +30,11 @@ require_once TravelAlbania_PLUGIN_PATH . 'includes/class-init-helper.php';
 require_once TravelAlbania_PLUGIN_PATH . 'includes/class-ajax.php';
 require_once TravelAlbania_PLUGIN_PATH . 'includes/meta-box.php';
 
+// require template function 
+require_once TravelAlbania_PLUGIN_PATH . 'templates/travel-offer-part/offer-part-function/flights-func.php';
+require_once TravelAlbania_PLUGIN_PATH . 'templates/travel-offer-part/offer-part-function/accommodations-func.php';
+require_once TravelAlbania_PLUGIN_PATH . 'templates/travel-offer-part/offer-part-function/transports-func.php';
+
 class TravelAlbania_Travel_Offer
 {
     /**

@@ -65,12 +65,14 @@ class TravelAlbania_Init_Helper
         return $template;
     }
 
-    public function delete_btn($id, $type, $label = 'Choosen')
+    public function delete_btn($id, $type, $label = 'Choosen', $method = '')
     {
 ?>
-        <div class="flight_on_delete flex items-center gap-5 border border-green-800 px-[30px] py-[10px] rounded-sm cursor-pointer hover:!bg-[#e73017] transition duration-200" data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">
+        <div class="<?php echo $method != 'not_delete' ? 'flight_on_delete' : ''; ?> flex items-center gap-5 border border-green-800 px-[30px] py-[10px] rounded-sm cursor-pointer hover:!bg-[#e73017] transition duration-200" data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">
             <p class="text-green-800 !mb-0 transition duration-200"><?php echo wp_kses_post($label); ?></p>
-            <i class="fa fa-trash text-[#e73017] cursor-pointer !p-0 !border-none transition duration-200"></i>
+            <?php if ($method != 'not_delete'): ?>
+                <i class="fa fa-trash text-[#e73017] cursor-pointer !p-0 !border-none transition duration-200"></i>
+            <?php endif; ?>
         </div>
     <?php
     }
@@ -82,19 +84,32 @@ class TravelAlbania_Init_Helper
         <?php
     }
 
-    public function pick_price_from_session($key)
+    public function pick_price_from_session($post_id, $key)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        $session_offer_data = isset($_SESSION['offer_data']) ? $_SESSION['offer_data'] : [];
+        $session_offer_data = isset($_SESSION['offer_data_' . $post_id]) ? $_SESSION['offer_data_' . $post_id] : [];
 
         $select_total_price = 0;
 
         if (!empty($session_offer_data[$key]) && is_array($session_offer_data[$key])) {
             foreach ($session_offer_data[$key] as $term_id) {
-                $price = (float) get_term_meta($term_id, 'price', true);
+                $term = get_term($term_id);
+                $price = 0;
+                if ($term->taxonomy == 'tta_travel_accommodations') {
+                    for ($i = 1; $i <= 4; $i++) {
+                        $season_price = get_term_meta($term_id, "price_season_$i", true);
+                        if ($season_price) {
+                            $price = $season_price;
+                            break;
+                        }
+                    }
+                } else {
+                    $price = (float) get_term_meta($term_id, 'price', true);
+                }
+
                 $select_total_price += $price;
             }
         }
@@ -106,14 +121,16 @@ class TravelAlbania_Init_Helper
     {
         $people_count = (float) get_post_meta($postid, 'number_of_people', true);
 
-        $accommodation_price = $this->pick_price_from_session('accommodations_id') / $people_count;
+        $accommodation_price = $this->pick_price_from_session($postid, 'accommodations_id') / $people_count;
 
-        $transport_price = $this->pick_price_from_session('transports_id') / $people_count;
+        $transport_price = $this->pick_price_from_session($postid, 'transports_id') / $people_count;
+
+        $extra_cost = $this->find_price_with_meta_common($postid, 'extra_cost_select');
 
         $price_per_person =
-            $this->pick_price_from_session('excursions_id')
+            $this->pick_price_from_session($postid, 'excursions_id')
             +
-            $this->pick_price_from_session('flights_id')
+            $this->pick_price_from_session($postid, 'flights_id')
             +
             $this->find_price_with_terms($postid)
             +
@@ -124,9 +141,9 @@ class TravelAlbania_Init_Helper
             $this->find_price_with_meta($postid, 'TravelAlbania_excursions_repeat', 'excursion_select');
 
         if ($type == 'final') {
-            return number_format((float)$price_per_person * $people_count, 2, '.', '');
+            return number_format((float)($price_per_person * $people_count) + $extra_cost, 2, '.', '');
         } else {
-            return number_format((float)$price_per_person, 2, '.', '');
+            return number_format((float)($price_per_person), 2, '.', '');
         }
     }
 
@@ -137,6 +154,21 @@ class TravelAlbania_Init_Helper
         foreach ($post_repeater_meta as $data) {
             $term_id_get = $data[$array_name];
             foreach ($term_id_get as $id) {
+                $is_included = get_term_meta($id, 'is_package_included', true);
+                if ($is_included == 'yes') {
+                    $term_ids[] = $id;
+                }
+            }
+        }
+        return $term_ids;
+    }
+
+    public function find_termid_with_meta_select($post_id, $meta_name)
+    {
+        $term_ids = array();
+        $termids = get_post_meta($post_id, $meta_name, true);
+        if (!empty($termids)) {
+            foreach ($termids as $id) {
                 $is_included = get_term_meta($id, 'is_package_included', true);
                 if ($is_included == 'yes') {
                     $term_ids[] = $id;
@@ -162,6 +194,18 @@ class TravelAlbania_Init_Helper
         return $price;
     }
 
+    public function find_price_with_meta_common($post_id, $meta_name)
+    {
+        $price = 0;
+        $post_repeater_meta = get_post_meta($post_id, $meta_name, true);
+        if (!empty($post_repeater_meta)) {
+            foreach ($post_repeater_meta as $id) {
+                $price += (float) get_term_meta($id, 'price', true);
+            }
+        }
+        return $price;
+    }
+
     public function find_price_with_terms($post_id)
     {
         $price = 0;
@@ -181,13 +225,61 @@ class TravelAlbania_Init_Helper
         return $price;
     }
 
-    public function render_summary()
+    public function showing_price_different($post_id, $type, $termid)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        $session_offer_data = isset($_SESSION['offer_data']) ? $_SESSION['offer_data'] : [];
+        $session_offer_data = $_SESSION['offer_data_' . $post_id] ?? [];
+        $session_flights_id = $session_offer_data[$type] ?? [];
+        $flights_id = $session_flights_id[0] ?? null;
+
+        if (!$flights_id) {
+            return 0;
+        }
+
+        $term = get_term($flights_id);
+
+        $choosen_price = 0;
+        $all_price = 0;
+
+        if ($term->taxonomy == 'tta_travel_accommodations') {
+            for ($i = 1; $i <= 4; $i++) {
+                $season_price = get_term_meta($flights_id, "price_season_$i", true);
+                if ($season_price) {
+                    $choosen_price = $season_price;
+                    break;
+                }
+            }
+
+            for ($i = 1; $i <= 4; $i++) {
+                $season_price = get_term_meta($termid, "price_season_$i", true);
+                if ($season_price) {
+                    $all_price = $season_price;
+                    break;
+                }
+            }
+        } else {
+            $choosen_price = (float) get_term_meta($flights_id, 'price', true);
+            $all_price = (float) get_term_meta($termid, 'price', true);
+        }
+
+        $difference = $all_price - $choosen_price;
+
+        $formatted_difference = ($difference > 0 ? '+' : '') . number_format($difference, 2);
+
+        return $formatted_difference;
+    }
+
+
+    public function render_summary($post_id)
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $session_offer_data = isset($_SESSION['offer_data_' . $post_id]) ? $_SESSION['offer_data_' . $post_id] : [];
 
         $session_flights_id = isset($session_offer_data['flights_id']) && is_array($session_offer_data['flights_id'])
             ? $session_offer_data['flights_id']

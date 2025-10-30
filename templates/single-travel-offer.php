@@ -8,28 +8,27 @@ if (session_status() === PHP_SESSION_NONE) {
 $post_id = get_the_ID();
 $helper_cls = new TravelAlbania_Init_Helper();
 
-if (!isset($_SESSION['offer_data'])) {
-    $_SESSION['offer_data'] = [
+if (!isset($_SESSION['offer_data_' . $post_id])) {
+    $_SESSION['offer_data_' . $post_id] = [
         'offer_id'   => $post_id,
-        'flights_id' => [],
+        'flights_id' => $helper_cls->find_termid_with_meta_select($post_id, 'flight_select', true),
         'accommodations_id' => $helper_cls->find_termid_with_meta($post_id, 'TravelAlbania_accommodations_repeat', 'accommodation_select'),
         'excursions_id' => [],
         'transports_id' => $helper_cls->find_termid_with_meta($post_id, 'TravelAlbania_transports_repeat', 'transport_select'),
     ];
 }
 
-// session_destroy();
-// if (isset($_SESSION['offer_data'])) {
+// if (isset($_SESSION['offer_data_' . $post_id])) {
 //     echo '<pre>';
-//     print_r($_SESSION['offer_data']);
+//     print_r($_SESSION['offer_data_' . $post_id]);
 //     echo '</pre>';
 // }
 
 
 $session_offer_data = array();
 
-if (isset($_SESSION['offer_data'])) {
-    $session_offer_data = $_SESSION['offer_data'];
+if (isset($_SESSION['offer_data_' . $post_id])) {
+    $session_offer_data = $_SESSION['offer_data_' . $post_id];
 }
 
 $session_flights_id = isset($session_offer_data['flights_id']) && is_array($session_offer_data['flights_id'])
@@ -54,7 +53,6 @@ $menu_items = [
     'Accommodations' => 'fa fa-building',
     'Excursions' => 'fa fa-compass',
     'Transport' => 'fa fa-car',
-    'Extras' => 'fa fa-car',
     'Summary' => 'fa fa-file-text',
     'Book' => 'fa fa-calendar'
 ];
@@ -106,14 +104,15 @@ $people = get_post_meta($post_id, 'number_of_people', true);
         z-index: 4;
     }
 
-    .offer_tab_top i {
+    /* .offer_tab_top i {
         visibility: hidden;
-    }
+    } */
 
     .offer_tab_top.active i {
         display: inline-block;
         visibility: visible;
         padding-left: 20px;
+        color: #fff !important;
     }
 </style>
 
@@ -123,11 +122,11 @@ $people = get_post_meta($post_id, 'number_of_people', true);
 
     <div class="!block">
 
-        <div class="flex items-center h-15 justify-between px-8 albania-custom-header">
-            <div>
-                <img class="logo w-[150px] px-5" src="<?php echo esc_url($logo) ?>" alt="logo">
+        <div class="flex flex-wrap 2xl:flex-nowrap xl:flex-nowrap md:flex-nowrap items-center h-15 justify-between 2xl:flex-row xl:flex-row md:flex-row flex-row 2xl:px-8 xl:px-8 md:px-8 albania-custom-header pb-20 2xl:pb-0 xl:pb-0 md:pb-0">
+            <div class="order-1">
+                <img class="logo 2xl:w-[150px] xl:w-[180px] md:w-[250px] w-[130px]  px-5" src="<?php echo esc_url($logo) ?>" alt="logo">
             </div>
-            <div class="inline-flex h-full overflow-hidden gap-4 w-[1300px] mx-auto">
+            <div class="2xl:inline-flex bg-white order-3 2xl:order-2 xl:order-2 md:order-2 md:order-2 flex justify-center mx-[auto] 2xl:h-full xl:h-full md:h-full h-7 overflow-hidden 2xl:gap-10 xl:gap-10 md:gap-8 gap-8  w-full 2xl:w-[1300px] mx-auto">
                 <?php
                 foreach ($menu_items as  $key => $item) :
 
@@ -138,8 +137,8 @@ $people = get_post_meta($post_id, 'number_of_people', true);
 
                 ?>
                     <span
-                        class="select-none cursor-pointer inline-flex items-center gap-2 p-[15px_25px] transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($key)); ?>">
-                        <i class="<?php echo esc_attr($item); ?>"></i>
+                        class="select-none cursor-pointer 2xl:inline-block 2xl:p-[15px_25px] xl:p-[15px_25px] md:p-[0px_3px_0px_5px] 2xl:text-[14px] p-[0px_0px_0px_0px] text-[0px] flex justify-center items-center transition-colors offer_tab_top offer_tab_onclick <?php echo esc_attr($active_class); ?>" data-tabid="<?php echo esc_attr(strtolower($key)); ?>">
+                        <i class="<?php echo esc_attr($item); ?> text-sm text-black visible 2xl:mr-2 ml-[3px] 2xl:text-white z-50"></i>
                         <?php echo esc_html($key); ?>
                     </span>
                 <?php
@@ -147,7 +146,7 @@ $people = get_post_meta($post_id, 'number_of_people', true);
                 ?>
             </div>
 
-            <div>
+            <div class="order-2 w-50 2xl:w-50 xl:w-70 md:w-50 2xl:order-3 xl:order-3 md:order-3 md:order-3 pr-2 2xl:pr-0 xl:pr-0 md:pr-0">
                 <?php
                 $price_per_person = $helper_cls->price_calculation($post_id);
                 $price_final = $helper_cls->price_calculation($post_id, 'final');
@@ -164,7 +163,6 @@ $people = get_post_meta($post_id, 'number_of_people', true);
             'accommodations',
             'excursions',
             'transport',
-            'extras',
             'summary',
             'book'
         ];

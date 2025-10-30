@@ -14,6 +14,9 @@ class TravelAlbania_Admin_Helper
 
         // post.php , category order fix
         add_filter('wp_terms_checklist_args', [$this, 'checklist_args']);
+
+        add_action('admin_bar_menu', [$this, 'travel_offer_toolbar_link'], 999);
+        add_action('init', [$this, 'clean_offer_session_action']);
     }
 
     // post.php , category order fix
@@ -22,6 +25,54 @@ class TravelAlbania_Admin_Helper
         $args['checked_ontop'] = false;
         return $args;
     }
+
+    public function travel_offer_toolbar_link($wp_admin_bar)
+    {
+        if (!is_user_logged_in()) {
+            return;
+        }
+
+        $current_url  = (is_ssl() ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $nonce = wp_create_nonce('clean_offer_session');
+
+        $href = add_query_arg(array(
+            'clean_offer_session' => '1',
+            '_wpnonce' => $nonce,
+            'redirect_to' => urlencode($current_url)
+        ), home_url('/'));
+
+        $args = array(
+            'id'    => 'clean_offer_session',
+            'title' => '🧹 Clean Offer Session',
+            'href'  => $href,
+            'meta'  => array('title' => 'Click to clear offer session')
+        );
+
+        $wp_admin_bar->add_node($args);
+    }
+
+
+    public function clean_offer_session_action()
+    {
+        if (isset($_GET['clean_offer_session']) && $_GET['clean_offer_session'] == '1') {
+            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'clean_offer_session')) {
+                wp_die('Security check failed.');
+            }
+
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            session_destroy();
+
+            $redirect_to = isset($_GET['redirect_to']) ? esc_url_raw($_GET['redirect_to']) : admin_url();
+
+            wp_safe_redirect($redirect_to);
+            exit;
+        }
+    }
+
 
     public function post_type()
     {
@@ -79,13 +130,44 @@ class TravelAlbania_Admin_Helper
             'hierarchical'      => true,
             'labels'            => $labels,
             'show_ui'           => true,
-            'show_admin_column' => true,
             'query_var'         => true,
+            'show_admin_column' => false,
+            'meta_box_cb'       => false,
+            'show_in_quick_edit' => false,
             // 'rewrite'           => ['slug' => 'travel-flights'],
             'rewrite'           => false,
             'public'            => false,
         ];
         register_taxonomy('tta_travel_flights', ['tta_travel_offer'], $args);
+
+
+        //=====================
+        $labels = [
+            'name'              => _x('Flight Includes', 'tta-travel-offer'),
+            'singular_name'     => _x('Flight Include', 'tta-travel-offer'),
+            'search_items'      => __('Search Flight Includes', 'tta-travel-offer'),
+            'all_items'         => __('All Flight Includes', 'tta-travel-offer'),
+            'parent_item'       => __('Parent Flight Include', 'tta-travel-offer'),
+            'parent_item_colon' => __('Parent Flight Include:', 'tta-travel-offer'),
+            'edit_item'         => __('Edit Flight Include', 'tta-travel-offer'),
+            'update_item'       => __('Update Flight Include', 'tta-travel-offer'),
+            'add_new_item'      => __('Add New Flight Include', 'tta-travel-offer'),
+            'new_item_name'     => __('New Flight Include Name', 'tta-travel-offer'),
+            'menu_name'         => __('Flight Includes', 'tta-travel-offer'),
+        ];
+        $args = [
+            'hierarchical'      => true,
+            'labels'            => $labels,
+            'show_ui'           => true,
+            'query_var'         => true,
+            'show_admin_column' => false,
+            'meta_box_cb'       => false,
+            'show_in_quick_edit' => false,
+            // 'rewrite'           => ['slug' => 'travel-flight-includes'],
+            'rewrite'           => false,
+            'public'            => false,
+        ];
+        register_taxonomy('tta_travel_flight_includes', ['tta_travel_offer'], $args);
 
 
         //=====================
@@ -177,17 +259,17 @@ class TravelAlbania_Admin_Helper
 
         //=====================
         $labels = [
-            'name'              => _x('Extras', 'tta-travel-offer'),
-            'singular_name'     => _x('Extra', 'tta-travel-offer'),
-            'search_items'      => __('Search Extras', 'tta-travel-offer'),
-            'all_items'         => __('All Extras', 'tta-travel-offer'),
-            'parent_item'       => __('Parent Extra', 'tta-travel-offer'),
-            'parent_item_colon' => __('Parent Extra:', 'tta-travel-offer'),
-            'edit_item'         => __('Edit Extra', 'tta-travel-offer'),
-            'update_item'       => __('Update Extra', 'tta-travel-offer'),
-            'add_new_item'      => __('Add New Extra', 'tta-travel-offer'),
-            'new_item_name'     => __('New Extra Name', 'tta-travel-offer'),
-            'menu_name'         => __('Extras', 'tta-travel-offer'),
+            'name'              => _x('Extra Cost', 'tta-travel-offer'),
+            'singular_name'     => _x('Extra Cost', 'tta-travel-offer'),
+            'search_items'      => __('Search Extra Cost', 'tta-travel-offer'),
+            'all_items'         => __('All Extra Cost', 'tta-travel-offer'),
+            'parent_item'       => __('Parent Extra Cost', 'tta-travel-offer'),
+            'parent_item_colon' => __('Parent Extra Cost:', 'tta-travel-offer'),
+            'edit_item'         => __('Edit Extra Cost', 'tta-travel-offer'),
+            'update_item'       => __('Update Extra Cost', 'tta-travel-offer'),
+            'add_new_item'      => __('Add New Extra Cost', 'tta-travel-offer'),
+            'new_item_name'     => __('New Extra Cost Name', 'tta-travel-offer'),
+            'menu_name'         => __('Extra Cost', 'tta-travel-offer'),
         ];
         $args = [
             'hierarchical'      => true,
@@ -197,10 +279,10 @@ class TravelAlbania_Admin_Helper
             'meta_box_cb'       => false,
             'show_in_quick_edit' => false,
             'query_var'         => true,
-            // 'rewrite'           => ['slug' => 'travel-extras'],
+            // 'rewrite'           => ['slug' => 'travel-extra-cost'],
             'rewrite'           => false,
             'public'            => false,
         ];
-        register_taxonomy('tta_travel_extras', ['tta_travel_offer'], $args);
+        register_taxonomy('tta_travel_extra_cost', ['tta_travel_offer'], $args);
     }
 }
