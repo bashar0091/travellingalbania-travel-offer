@@ -4,7 +4,7 @@ function render_accommodations_content($post_id, $helper_cls, $session_accommoda
     $accommodation_date = get_post_meta($post_id, 'TravelAlbania_accommodations_repeat', true);
 
     if (!empty($accommodation_date) && !is_wp_error($accommodation_date)) :
-        foreach ($accommodation_date as $date) :
+        foreach ($accommodation_date as $key => $date) :
             $start_date = get_gmt_from_date($date['start_date'], 'd F');
             $end_date = get_gmt_from_date($date['end_date'], 'd F Y');
             $accommodation_select = !empty($date['accommodation_select']) ? $date['accommodation_select'] : null;
@@ -49,7 +49,7 @@ function render_accommodations_content($post_id, $helper_cls, $session_accommoda
                                 $is_first_hotel = $i === 0 ? true : false;
 
                                 $is_package_included = get_term_meta($hotel_id, 'is_package_included', true);
-                                $is_selected = in_array($hotel_id, $session_accommodations_id);
+                                $is_selected =  in_array($hotel_id, array_merge(...array_values($session_accommodations_id)));
                     ?>
                                 <div class="mb-5 flex items-center gap-10 rounded-lg ring ring-[#80808012] shadow-md">
                                     <div class="w-3/4 flex items-center border-r-1 border-[#80808057] pr-10">
@@ -136,23 +136,24 @@ function render_accommodations_content($post_id, $helper_cls, $session_accommoda
                                             if ($is_selected):
                                                 $helper_cls->delete_btn($hotel_id, 'accommodations_id', 'Choosen', 'not_delete');
                                             else:
-                                                $helper_cls->select_btn($hotel_id, 'accommodations_id');
+                                                $helper_cls->select_btn($hotel_id, 'accommodations_id', $key);
                                             endif; ?>
                                         </div>
 
+                                        <?php if (!$is_selected): ?>
+                                            <span>
+                                                €
+                                                <?php
+                                                $different_price = $helper_cls->showing_price_different($post_id, 'accommodations_id', $hotel_id, $key);
 
-                                        <span>
-                                            €
-                                            <?php
-                                            $different_price = $helper_cls->showing_price_different($post_id, 'accommodations_id', $hotel_id);
-
-                                            if ($different_price == 0) {
-                                                echo wp_kses_post(number_format((float)$price, 2));
-                                            } else {
-                                                echo $different_price;
-                                            }
-                                            ?> / Room
-                                        </span>
+                                                if ($different_price == 0) {
+                                                    echo wp_kses_post(number_format((float)$price, 2));
+                                                } else {
+                                                    echo $different_price;
+                                                }
+                                                ?> / Room
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                     <?php

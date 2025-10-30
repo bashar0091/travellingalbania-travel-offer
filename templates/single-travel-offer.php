@@ -12,7 +12,7 @@ if (!isset($_SESSION['offer_data_' . $post_id])) {
     $_SESSION['offer_data_' . $post_id] = [
         'offer_id'   => $post_id,
         'flights_id' => $helper_cls->find_termid_with_meta_select($post_id, 'flight_select', true),
-        'accommodations_id' => $helper_cls->find_termid_with_meta($post_id, 'TravelAlbania_accommodations_repeat', 'accommodation_select'),
+        'accommodations_id' => $helper_cls->find_group_termid_with_meta($post_id, 'TravelAlbania_accommodations_repeat', 'accommodation_select'),
         'excursions_id' => [],
         'transports_id' => $helper_cls->find_termid_with_meta($post_id, 'TravelAlbania_transports_repeat', 'transport_select'),
     ];

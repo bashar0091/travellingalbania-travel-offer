@@ -113,18 +113,20 @@ function render_transport_content($post_id, $helper_cls, $session_transports_id)
                                             endif; ?>
                                         </div>
 
-                                        <span>
-                                            €
-                                            <?php
-                                            $different_price = $helper_cls->showing_price_different($post_id, 'transports_id', $hotel_id);
+                                        <?php if (!$is_selected): ?>
+                                            <span>
+                                                €
+                                                <?php
+                                                $different_price = $helper_cls->showing_price_different($post_id, 'transports_id', $hotel_id);
 
-                                            if ($different_price == 0) {
-                                                echo wp_kses_post(number_format((float)$price, 2));
-                                            } else {
-                                                echo $different_price;
-                                            }
-                                            ?> / Day
-                                        </span>
+                                                if ($different_price == 0) {
+                                                    echo wp_kses_post(number_format((float)$price, 2));
+                                                } else {
+                                                    echo $different_price;
+                                                }
+                                                ?> / Day
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
 
                                 </div>

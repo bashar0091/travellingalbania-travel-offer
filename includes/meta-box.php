@@ -320,6 +320,7 @@ function TravelAlbania_register_offer_metabox()
 		'name'    => esc_html__('Departure', 'tta-travel-offer'),
 		'id'      => 'departure',
 		'type'    => 'text_date',
+		'date_format' => 'd/m/Y',
 		'default' => '',
 	));
 
@@ -327,6 +328,7 @@ function TravelAlbania_register_offer_metabox()
 		'name'    => esc_html__('Return', 'tta-travel-offer'),
 		'id'      => 'return',
 		'type'    => 'text_date',
+		'date_format' => 'd/m/Y',
 		'default' => '',
 	));
 
@@ -403,6 +405,7 @@ function TravelAlbania_register_flights_field()
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Flight Departure Date', 'tta-travel-offer'),
 		'id'         => 'flight_departure_date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	));
 
@@ -410,17 +413,20 @@ function TravelAlbania_register_flights_field()
 		'name'       => esc_html__('Flight Departure Start Time', 'tta-travel-offer'),
 		'id'         => 'flight_departure_start_time',
 		'type'       => 'text_time',
+		'time_format' => 'H:i',
 	));
 
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Flight Departure End Time', 'tta-travel-offer'),
 		'id'         => 'flight_departure_end_time',
 		'type'       => 'text_time',
+		'time_format' => 'H:i',
 	));
 
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Flight Return Date', 'tta-travel-offer'),
 		'id'         => 'flight_return_date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	));
 
@@ -428,12 +434,14 @@ function TravelAlbania_register_flights_field()
 		'name'       => esc_html__('Flight Return Start Time', 'tta-travel-offer'),
 		'id'         => 'flight_return_start_time',
 		'type'       => 'text_time',
+		'time_format' => 'H:i',
 	));
 
 	$cmb_init->add_field(array(
 		'name'       => esc_html__('Flight Return End Time', 'tta-travel-offer'),
 		'id'         => 'flight_returne_end_time',
 		'type'       => 'text_time',
+		'time_format' => 'H:i',
 	));
 
 	$cmb_init->add_field(array(
@@ -470,12 +478,14 @@ function TravelAlbania_register_accommodations_field()
 	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('Start Date', 'tta-travel-offer'),
 		'id'         => 'start_date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	]);
 
 	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('End Date', 'tta-travel-offer'),
 		'id'         => 'end_date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	]);
 
@@ -513,6 +523,7 @@ function TravelAlbania_register_excursions_field()
 	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('Date', 'tta-travel-offer'),
 		'id'         => 'date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	]);
 
@@ -549,12 +560,14 @@ function TravelAlbania_register_transports_field()
 	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('Start Date', 'tta-travel-offer'),
 		'id'         => 'start_date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	]);
 
 	$cmb_init->add_group_field($group_id, [
 		'name'       => esc_html__('End Date', 'tta-travel-offer'),
 		'id'         => 'end_date',
+		'date_format' => 'd/m/Y',
 		'type'       => 'text_date',
 	]);
 

@@ -81,6 +81,29 @@ function render_flight_content($post_id, $helper_cls, $session_flights_id)
                         endif; ?>
                     </table>
 
+                    <?php if (!empty($flight_includes)): ?>
+                        <div class="flex items-center flex-wrap gap-5 mt-10 w-full">
+                            <?php
+                            foreach ($flight_includes as $item):
+                                $term = get_term($item);
+                                $id_icn = $term->term_id;
+                                $name = $term->name;
+                                $des = $term->description;
+                                $icon = get_term_meta($id_icn, 'icon', true);
+                            ?>
+                                <div class="flex gap-2">
+                                    <div>
+                                        <img src="<?php echo esc_url($icon); ?>" class="w-[15px]">
+                                    </div>
+                                    <div class="flex-1">
+                                        <h6 class="!m-0 !text-[14px]"><?php echo wp_kses_post($name); ?></h6>
+                                        <!-- <p class="!m-0 text-[14px]"><?php //echo wp_kses_post($des); 
+                                                                            ?></p> -->
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="flex flex-col gap-2 items-center w-1/3 justify-center">
                     <div class="render_flight_btn">
@@ -92,40 +115,19 @@ function render_flight_content($post_id, $helper_cls, $session_flights_id)
                         endif; ?>
                     </div>
 
-                    <span>
-                        €
-                        <?php
-                        $different_price = $helper_cls->showing_price_different($post_id, 'flights_id', $id);
-
-                        if ($different_price == 0) {
-                            echo wp_kses_post(number_format((float)$price, 2));
-                        } else {
-                            echo $different_price;
-                        }
-                        ?> / Person
-                    </span>
-
-                    <?php if (!empty($flight_includes)): ?>
-                        <div class="grid grid-cols-1 gap-5 mt-10 w-full">
+                    <?php if (!$is_selected): ?>
+                        <span>
+                            €
                             <?php
-                            foreach ($flight_includes as $item):
-                                $term = get_term($item);
-                                $id = $term->term_id;
-                                $name = $term->name;
-                                $des = $term->description;
-                                $icon = get_term_meta($id, 'icon', true);
-                            ?>
-                                <div class="flex gap-2">
-                                    <div>
-                                        <img src="<?php echo esc_url($icon); ?>" class="w-[15px]">
-                                    </div>
-                                    <div class="flex-1">
-                                        <h6 class="!m-0 !text-[14px]"><?php echo wp_kses_post($name); ?></h6>
-                                        <p class="!m-0 text-[14px]"><?php echo wp_kses_post($des); ?></p>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                            $different_price = $helper_cls->showing_price_different($post_id, 'flights_id', $id);
+
+                            if ($different_price == 0) {
+                                echo wp_kses_post(number_format((float)$price, 2));
+                            } else {
+                                echo $different_price;
+                            }
+                            ?> / Person
+                        </span>
                     <?php endif; ?>
                 </div>
             </div>

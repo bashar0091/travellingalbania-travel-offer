@@ -25,10 +25,13 @@ class TravelAlbania_Ajax
         $flight_id = isset($_POST['flight_id']) ? intval($_POST['flight_id']) : 0;
         $post_id = isset($_POST['offer_id']) ? intval($_POST['offer_id']) : 0;
         $type      = isset($_POST['type']) ? sanitize_text_field($_POST['type']) : '';
+        $key = isset($_POST['key']) ? intval($_POST['key']) : null;
 
         if ($flight_id && !in_array($flight_id, $_SESSION['offer_data_' . $post_id][$type])) {
-            if ($type == 'flights_id' || $type == 'accommodations_id' || $type == 'transports_id') {
+            if ($type == 'flights_id' | $type == 'transports_id') {
                 $_SESSION['offer_data_' . $post_id][$type][0] = $flight_id;
+            } elseif ($type == 'accommodations_id') {
+                $_SESSION['offer_data_' . $post_id][$type][$key][0] = $flight_id;
             } else {
                 $_SESSION['offer_data_' . $post_id][$type][] = $flight_id;
             }
@@ -50,7 +53,15 @@ class TravelAlbania_Ajax
         if ($type == 'flights_id') {
             render_flight_content($post_id, $helper_cls, [$flight_id]);
         } elseif ($type == 'accommodations_id') {
-            render_accommodations_content($post_id, $helper_cls, [$flight_id]);
+            $session_offer_data = array();
+            if (isset($_SESSION['offer_data_' . $post_id])) {
+                $session_offer_data = $_SESSION['offer_data_' . $post_id];
+            }
+            $session_accommodations_id = isset($session_offer_data['accommodations_id']) && is_array($session_offer_data['accommodations_id'])
+                ? $session_offer_data['accommodations_id']
+                : [];
+
+            render_accommodations_content($post_id, $helper_cls, $session_accommodations_id);
         } elseif ($type == 'transports_id') {
             render_transport_content($post_id, $helper_cls, [$flight_id]);
         }

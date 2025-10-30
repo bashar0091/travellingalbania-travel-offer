@@ -77,10 +77,10 @@ class TravelAlbania_Init_Helper
     <?php
     }
 
-    public function select_btn($id, $type)
+    public function select_btn($id, $type, $key = null)
     {
     ?>
-        <button type="button" class="flight_on_select" data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">Select</button>
+        <button type="button" class="flight_on_select" <?php echo (isset($key) ? 'data-key="' . esc_attr($key) . '"' : ''); ?> data-type="<?php echo esc_attr($type); ?>" data-flightid="<?php echo esc_attr($id); ?>">Select</button>
         <?php
     }
 
@@ -91,16 +91,26 @@ class TravelAlbania_Init_Helper
         }
 
         $session_offer_data = isset($_SESSION['offer_data_' . $post_id]) ? $_SESSION['offer_data_' . $post_id] : [];
+        $session_data = $session_offer_data[$key];
 
         $select_total_price = 0;
 
-        if (!empty($session_offer_data[$key]) && is_array($session_offer_data[$key])) {
-            foreach ($session_offer_data[$key] as $term_id) {
+        if (!empty($session_data) && is_array($session_data)) {
+            foreach ($session_data as $term_id) {
+
+                if (empty($term_id)) {
+                    return  $select_total_price;
+                }
+
                 $term = get_term($term_id);
+
+                if ($key == 'accommodations_id') {
+                    $term = get_term($term_id[0]);
+                }
                 $price = 0;
                 if ($term->taxonomy == 'tta_travel_accommodations') {
                     for ($i = 1; $i <= 4; $i++) {
-                        $season_price = get_term_meta($term_id, "price_season_$i", true);
+                        $season_price = get_term_meta($term_id[0], "price_season_$i", true);
                         if ($season_price) {
                             $price = $season_price;
                             break;
@@ -162,6 +172,32 @@ class TravelAlbania_Init_Helper
         }
         return $term_ids;
     }
+
+    public function find_group_termid_with_meta($post_id, $meta_name, $array_name)
+    {
+        $term_ids = array();
+        $post_repeater_meta = get_post_meta($post_id, $meta_name, true);
+
+        if (!is_array($post_repeater_meta)) {
+            return $term_ids;
+        }
+
+        foreach ($post_repeater_meta as $key => $data) {
+            if (empty($data[$array_name]) || !is_array($data[$array_name])) {
+                continue;
+            }
+
+            foreach ($data[$array_name] as $id) {
+                $is_included = get_term_meta($id, 'is_package_included', true);
+                if ($is_included === 'yes') {
+                    $term_ids[$key][] = $id;
+                }
+            }
+        }
+
+        return $term_ids;
+    }
+
 
     public function find_termid_with_meta_select($post_id, $meta_name)
     {
@@ -225,7 +261,7 @@ class TravelAlbania_Init_Helper
         return $price;
     }
 
-    public function showing_price_different($post_id, $type, $termid)
+    public function showing_price_different($post_id, $type, $termid, $key = null)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -234,6 +270,9 @@ class TravelAlbania_Init_Helper
         $session_offer_data = $_SESSION['offer_data_' . $post_id] ?? [];
         $session_flights_id = $session_offer_data[$type] ?? [];
         $flights_id = $session_flights_id[0] ?? null;
+        if ($type == 'accommodations_id') {
+            $flights_id = $session_flights_id[$key][0] ?? null;
+        }
 
         if (!$flights_id) {
             return 0;
@@ -286,7 +325,7 @@ class TravelAlbania_Init_Helper
             : [];
 
         $session_accommodations_id = isset($session_offer_data['accommodations_id']) && is_array($session_offer_data['accommodations_id'])
-            ? $session_offer_data['accommodations_id']
+            ? $session_offer_data['accommodations_id'][0]
             : [];
 
         $session_excursions_id = isset($session_offer_data['excursions_id']) && is_array($session_offer_data['excursions_id'])

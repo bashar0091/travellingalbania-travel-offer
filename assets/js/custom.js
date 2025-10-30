@@ -9,6 +9,7 @@ jQuery(document).ready(function ($) {
     var t = $(this);
     var flight_id = t.data("flightid");
     var type = t.data("type");
+    var key = t.data("key");
     var offer_id = $('input[name="offer_id"]').val();
 
     $.ajax({
@@ -19,6 +20,7 @@ jQuery(document).ready(function ($) {
         flight_id: flight_id,
         offer_id: offer_id,
         type: type,
+        key: key,
       },
       success: function (response) {
         offer_price_per_person.text(response.data.price_per_person);

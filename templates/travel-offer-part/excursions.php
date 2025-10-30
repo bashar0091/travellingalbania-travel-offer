@@ -80,11 +80,15 @@ $helper_cls = new TravelAlbania_Init_Helper;
                                             endif; ?>
                                         </div>
 
-                                        <span>
-                                            <?php echo $is_package_included !== 'yes' && $price ? "+" : ""; ?>
-                                            €
-                                            <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Person
-                                        </span>
+                                        <?php
+                                        if ($is_package_included !== 'yes'): ?>
+                                            <span>
+                                                <?php //echo $is_package_included !== 'yes' && $price ? "+" : ""; 
+                                                ?>
+                                                €
+                                                <?php echo wp_kses_post(number_format((float)$price, 2)); ?> / Person
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                     <?php

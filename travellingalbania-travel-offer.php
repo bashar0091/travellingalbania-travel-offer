@@ -95,3 +95,56 @@ class TravelAlbania_Travel_Offer
 
 // Initialize the plugin
 new TravelAlbania_Travel_Offer();
+
+
+// add_action('init', function () {
+//     $post_id = 131;
+//     $key = 'accommodations_id';
+
+//     if (session_status() === PHP_SESSION_NONE) {
+//         session_start();
+//     }
+
+//     $session_offer_data = isset($_SESSION['offer_data_' . $post_id]) ? $_SESSION['offer_data_' . $post_id] : [];
+//     $session_data = $session_offer_data[$key];
+
+//     $select_total_price = 0;
+
+//     if (!empty($session_data) && is_array($session_data)) {
+//         foreach ($session_data as $term_id) {
+
+
+
+//             if (empty($term_id)) {
+//                 return  $select_total_price;
+//             }
+
+
+
+//             $term = get_term($term_id[0]);
+
+
+
+//             $price = 0;
+//             if ($term->taxonomy == 'tta_travel_accommodations') {
+
+//                 for ($i = 1; $i <= 4; $i++) {
+//                     $season_price = get_term_meta($term_id[0], "price_season_$i", true);
+//                     if ($season_price) {
+//                         echo '<pre>';
+//                         print_r($term);
+//                         echo '</pre>';
+//                         $price = $season_price;
+//                         break;
+//                     }
+//                 }
+//             } else {
+//                 $price = (float) get_term_meta($term_id, 'price', true);
+//             }
+
+//             $select_total_price += $price;
+//         }
+//     }
+
+//     echo $select_total_price;
+// });
