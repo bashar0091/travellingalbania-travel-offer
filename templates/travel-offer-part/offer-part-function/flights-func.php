@@ -1,15 +1,47 @@
 <?php
 function render_flight_content($post_id, $helper_cls, $session_flights_id)
 {
-    $flight_select = get_post_meta($post_id, 'flight_select', true);
+	$flight_select = get_post_meta($post_id, 'flight_select', true);
 
-    $flight_departure_date = gmdate('d/m/Y', get_post_meta($post_id, 'flight_departure_date', true));
-    $flight_departure_start_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_departure_start_time', true)));
-    $flight_departure_end_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_departure_end_time', true)));
+	$flight_departure_meta = get_post_meta($post_id, 'flight_departure_date', true);
+	$flight_return_meta = get_post_meta($post_id, 'flight_return_date', true);
 
-    $flight_return_date = gmdate('d/m/Y', get_post_meta($post_id, 'flight_return_date', true));
-    $flight_return_start_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_return_start_time', true)));
-    $flight_returne_end_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_returne_end_time', true)));
+	$flight_departure_timestamp = strtotime($flight_departure_meta);
+	$flight_return_timestamp = strtotime($flight_return_meta);
+
+	$flight_departure_date = $flight_departure_timestamp ? gmdate('d/m/Y', $flight_departure_timestamp) : '';
+	$flight_return_date = $flight_return_timestamp ? gmdate('d/m/Y', $flight_return_timestamp) : '';
+
+	$flight_departure_start_time = '';
+	$flight_departure_end_time = '';
+	$flight_return_start_time = '';
+	$flight_return_end_time = '';
+
+	$meta_departure_start = get_post_meta($post_id, 'flight_departure_start_time', true);
+	$meta_departure_end = get_post_meta($post_id, 'flight_departure_end_time', true);
+	$meta_return_start = get_post_meta($post_id, 'flight_return_start_time', true);
+	$meta_return_end = get_post_meta($post_id, 'flight_return_end_time', true);
+
+	if (!empty($meta_departure_start)) {
+		$timestamp = strtotime($meta_departure_start);
+		if ($timestamp) $flight_departure_start_time = gmdate('H:i', $timestamp);
+	}
+
+	if (!empty($meta_departure_end)) {
+		$timestamp = strtotime($meta_departure_end);
+		if ($timestamp) $flight_departure_end_time = gmdate('H:i', $timestamp);
+	}
+
+	if (!empty($meta_return_start)) {
+		$timestamp = strtotime($meta_return_start);
+		if ($timestamp) $flight_return_start_time = gmdate('H:i', $timestamp);
+	}
+
+	if (!empty($meta_return_end)) {
+		$timestamp = strtotime($meta_return_end);
+		if ($timestamp) $flight_return_end_time = gmdate('H:i', $timestamp);
+	}
+
 
     if (!empty($flight_select) && is_array($flight_select)) :
         foreach ($flight_select as $flight_id) :

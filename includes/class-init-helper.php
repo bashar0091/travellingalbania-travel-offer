@@ -131,6 +131,10 @@ class TravelAlbania_Init_Helper
 	{
 		$people_count = (float) get_post_meta($postid, 'number_of_people', true);
 
+		if ($people_count <= 0) {
+			$people_count = 1;
+		}
+
 		$accommodation_price = $this->pick_price_from_session($postid, 'accommodations_id') / $people_count;
 
 		$transport_price = $this->pick_price_from_session($postid, 'transports_id') / $people_count;

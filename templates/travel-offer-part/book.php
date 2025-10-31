@@ -9,11 +9,11 @@
                     </tr>
                     <tr>
                         <th>Departure:</th>
-                        <td><?php echo esc_html(date('j F, Y', $departure_data)); ?></td>
+                        <td><?php echo esc_html($departure); ?></td>
                     </tr>
                     <tr>
                         <th>Return:</th>
-                        <td><?php echo esc_html(date('j F, Y', $return_data)); ?></td>
+                        <td><?php echo esc_html($return); ?></td>
                     </tr>
                     <tr>
                         <th>Duration:</th>

@@ -17,24 +17,39 @@
 </style>
 
 <?php
-$departure_data = get_post_meta(get_the_ID(), 'departure', true);
-$return_data = get_post_meta(get_the_ID(), 'return', true);
+$post_id = get_the_ID(); // Ensure $post_id is defined
 
+// Get meta values
+$departure_data = get_post_meta($post_id, 'departure', true);
+$return_data = get_post_meta($post_id, 'return', true);
+
+// Initialize variables
 $diff_days = 0;
+$departure = '';
+$return = '';
 
 if (!empty($departure_data) && !empty($return_data)) {
-    $dep_date = new DateTime();
-    $dep_date->setTimestamp($departure_data);
+    // Ensure timestamps are integers
+    $dep_timestamp = intval($departure_data);
+    $ret_timestamp = intval($return_data);
 
-    $ret_date = new DateTime();
-    $ret_date->setTimestamp($return_data);
+    // Create DateTime objects
+    $dep_date = (new DateTime())->setTimestamp($dep_timestamp);
+    $ret_date = (new DateTime())->setTimestamp($ret_timestamp);
 
+    // Format for display
+    $departure = $dep_date->format('j F, Y');
+    $return = $ret_date->format('j F, Y');
+
+    // Calculate duration
     $interval = $ret_date->diff($dep_date);
     $diff_days = ($ret_date < $dep_date) ? 0 : $interval->days;
 }
 
-$departure = !empty($departure_data) ? date('d/m/Y', $departure_data) : '';
-$return = !empty($return_data) ? date('d/m/Y', $return_data) : '';
+// Other data (ensure these are defined)
+$people = isset($people) ? $people : 1; // default 1 person
+$price_per_person = isset($price_per_person) ? $price_per_person : '0';
+$price_final = isset($price_final) ? $price_final : '0';
 ?>
 
 <div class="overflow-hidden">
@@ -48,23 +63,19 @@ $return = !empty($return_data) ? date('d/m/Y', $return_data) : '';
                     </tr>
                     <tr>
                         <th>Departure:</th>
-                        <td><?php echo esc_html(date('j F, Y', $departure_data)); ?></td>
+                        <td><?php echo esc_html($departure); ?></td>
                     </tr>
                     <tr>
                         <th>Return:</th>
-                        <td><?php echo esc_html(date('j F, Y', $return_data)); ?></td>
+                        <td><?php echo esc_html($return); ?></td>
                     </tr>
                     <tr>
                         <th>Duration:</th>
-                        <td><?php echo esc_html($diff_days) ?> days</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td></td>
+                        <td><?php echo esc_html($diff_days); ?> days</td>
                     </tr>
                     <tr>
                         <th>Number of people:</th>
-                        <td><?php echo esc_html($people) ?></td>
+                        <td><?php echo esc_html($people); ?></td>
                     </tr>
                     <tr>
                         <th>Price per person:</th>
@@ -81,10 +92,11 @@ $return = !empty($return_data) ? date('d/m/Y', $return_data) : '';
                             </td>
                         </tr>
                         <?php
-                        foreach ($extra_cost_select as $cost):
-                            $term = get_term($cost);
+                        foreach ($extra_cost_select as $cost_id):
+                            $term = get_term($cost_id);
+                            if (!$term) continue;
                             $title = $term->name;
-                            $price = get_term_meta($cost, 'price', true);
+                            $price = get_term_meta($cost_id, 'price', true);
                         ?>
                             <tr>
                                 <th><?php echo wp_kses_post($title); ?>:</th>
@@ -111,7 +123,9 @@ $return = !empty($return_data) ? date('d/m/Y', $return_data) : '';
 
             <div class="render_summary_data">
                 <?php
-                $helper_cls->render_summary($post_id);
+                if (isset($helper_cls)) {
+                    $helper_cls->render_summary($post_id);
+                }
                 ?>
             </div>
 
