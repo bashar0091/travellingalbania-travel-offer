@@ -17,14 +17,24 @@
 </style>
 
 <?php
-$departure = get_post_meta(get_the_ID(), 'departure', true);
-$return = get_post_meta(get_the_ID(), 'return', true);
+$departure_data = get_post_meta(get_the_ID(), 'departure', true);
+$return_data = get_post_meta(get_the_ID(), 'return', true);
 
-if ($departure && $return) {
-    $dep_date = new DateTime($departure);
-    $ret_date = new DateTime($return);
-    $diff_days = $dep_date->diff($ret_date)->days;
+$diff_days = 0;
+
+if (!empty($departure_data) && !empty($return_data)) {
+    $dep_date = new DateTime();
+    $dep_date->setTimestamp($departure_data);
+
+    $ret_date = new DateTime();
+    $ret_date->setTimestamp($return_data);
+
+    $interval = $ret_date->diff($dep_date);
+    $diff_days = ($ret_date < $dep_date) ? 0 : $interval->days;
 }
+
+$departure = !empty($departure_data) ? date('d/m/Y', $departure_data) : '';
+$return = !empty($return_data) ? date('d/m/Y', $return_data) : '';
 ?>
 
 <div class="overflow-hidden">
@@ -38,11 +48,11 @@ if ($departure && $return) {
                     </tr>
                     <tr>
                         <th>Departure:</th>
-                        <td><?php echo esc_html(date('j F, Y', strtotime($departure))); ?></td>
+                        <td><?php echo esc_html(date('j F, Y', $departure_data)); ?></td>
                     </tr>
                     <tr>
                         <th>Return:</th>
-                        <td><?php echo esc_html(date('j F, Y', strtotime($return))); ?></td>
+                        <td><?php echo esc_html(date('j F, Y', $return_data)); ?></td>
                     </tr>
                     <tr>
                         <th>Duration:</th>

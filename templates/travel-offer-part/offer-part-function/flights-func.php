@@ -3,11 +3,11 @@ function render_flight_content($post_id, $helper_cls, $session_flights_id)
 {
     $flight_select = get_post_meta($post_id, 'flight_select', true);
 
-    $flight_departure_date = gmdate('d/m/Y', strtotime(get_post_meta($post_id, 'flight_departure_date', true)));
+    $flight_departure_date = gmdate('d/m/Y', get_post_meta($post_id, 'flight_departure_date', true));
     $flight_departure_start_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_departure_start_time', true)));
     $flight_departure_end_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_departure_end_time', true)));
 
-    $flight_return_date = gmdate('d/m/Y', strtotime(get_post_meta($post_id, 'flight_return_date', true)));
+    $flight_return_date = gmdate('d/m/Y', get_post_meta($post_id, 'flight_return_date', true));
     $flight_return_start_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_return_start_time', true)));
     $flight_returne_end_time = gmdate('H:i', strtotime(get_post_meta($post_id, 'flight_returne_end_time', true)));
 

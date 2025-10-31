@@ -5,8 +5,8 @@ function render_transport_content($post_id, $helper_cls, $session_transports_id)
 
     if (!empty($transport_date) && !is_wp_error($transport_date)) :
         foreach ($transport_date as $date) :
-            $start_date = get_gmt_from_date($date['start_date'], 'd F');
-            $end_date = get_gmt_from_date($date['end_date'], 'd F Y');
+            $start_date = gmdate('d F', $date['start_date']);
+            $end_date = gmdate('d F Y', $date['end_date']);
             $transport_select = !empty($date['transport_select']) ? $date['transport_select'] : null;
 ?>
 

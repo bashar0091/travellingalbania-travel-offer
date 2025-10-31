@@ -5,8 +5,8 @@ function render_accommodations_content($post_id, $helper_cls, $session_accommoda
 
     if (!empty($accommodation_date) && !is_wp_error($accommodation_date)) :
         foreach ($accommodation_date as $key => $date) :
-            $start_date = get_gmt_from_date($date['start_date'], 'd F');
-            $end_date = get_gmt_from_date($date['end_date'], 'd F Y');
+            $start_date = !empty($date['start_date']) ? gmdate('d F', $date['start_date']) : '';
+            $end_date = !empty($date['end_date']) ? gmdate('d F Y', $date['end_date']) : '';
             $accommodation_select = !empty($date['accommodation_select']) ? $date['accommodation_select'] : null;
 ?>
             <div class="overflow-x-auto w-full mx-auto">

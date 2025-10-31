@@ -9,15 +9,15 @@
                     </tr>
                     <tr>
                         <th>Departure:</th>
-                        <td>November 3, 2025</td>
+                        <td><?php echo esc_html(date('j F, Y', $departure_data)); ?></td>
                     </tr>
                     <tr>
                         <th>Return:</th>
-                        <td>November 14, 2025</td>
+                        <td><?php echo esc_html(date('j F, Y', $return_data)); ?></td>
                     </tr>
                     <tr>
                         <th>Duration:</th>
-                        <td>12 days</td>
+                        <td><?php echo esc_html($diff_days) ?></td>
                     </tr>
                     <tr>
                         <th></th>

@@ -20,7 +20,7 @@ $helper_cls = new TravelAlbania_Init_Helper;
 
     if (!empty($excursion_date) && !is_wp_error($excursion_date)) :
         foreach ($excursion_date as $date) :
-            $date_name = get_gmt_from_date($date['date'], 'd F');
+            $date_name = gmdate('d F', $date['date']);
             $excursion_select = !empty($date['excursion_select']) ? $date['excursion_select'] : null;
     ?>
 
